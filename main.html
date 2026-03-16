@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Jeopardy</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .jeopardy-blue { background-color: #060ce9; }
+        .jeopardy-gold { color: #ffcc00; }
+    </style>
+</head>
+<body class="bg-black text-white font-sans">
+
+<div id="app" class="p-4">
+    <h1 class="text-4xl text-center mb-8 font-bold jeopardy-gold uppercase tracking-widest">Web Jeopardy</h1>
+
+    <div class="grid grid-cols-5 gap-4 max-w-6xl mx-auto">
+        <div v-for="cat in boardData" :key="cat.name" 
+             class="jeopardy-blue border-2 border-white p-4 text-center font-bold text-xl uppercase h-24 flex items-center justify-center">
+            {{ cat.name }}
+        </div>
+
+        <template v-for="rowIndex in [0, 1, 2, 3, 4]">
+            <div v-for="(cat, catIndex) in boardData" :key="catIndex + '-' + rowIndex"
+                 @click="openQuestion(catIndex, rowIndex)"
+                 class="jeopardy-blue border-2 border-white aspect-video flex items-center justify-center text-4xl font-bold cursor-pointer hover:bg-blue-700 transition-colors"
+                 :class="{ 'opacity-0 cursor-default': cat.questions[rowIndex].done }">
+                <span class="jeopardy-gold" v-if="!cat.questions[rowIndex].done">
+                    {{ (rowIndex + 1) * 100 }}
+                </span>
+            </div>
+        </template>
+    </div>
+
+    <div v-if="activeQuestion" 
+         class="fixed inset-0 bg-blue-900 flex flex-col items-center justify-center p-10 text-center">
+        <h2 class="text-2xl mb-4 opacity-70">{{ activeQuestion.category }} für {{ activeQuestion.value }}</h2>
+        
+        <p class="text-6xl font-bold mb-12">
+            {{ showAnswer ? activeQuestion.a : activeQuestion.q }}
+        </p>
+
+        <div class="space-x-4">
+            <button @click="showAnswer = true" v-if="!showAnswer"
+                    class="bg-white text-blue-900 px-8 py-3 rounded-full font-bold text-xl uppercase">Antwort zeigen</button>
+            <button @click="closeQuestion" v-if="showAnswer"
+                    class="bg-yellow-500 text-black px-8 py-3 rounded-full font-bold text-xl uppercase">Fertig</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const { createApp } = Vue
+
+createApp({
+    data() {
+        return {
+            showAnswer: false,
+            activeQuestion: null,
+            // Beispieldaten: Das könnte später aus einer Datenbank oder einem Editor kommen
+            boardData: [
+                { name: "Code", questions: [{q: "Was heißt HTML?", a: "Hypertext Markup Language", done: false}, {q: "JS?", a: "JavaScript", done: false}, {q: "CSS?", a: "Cascading Style Sheets", done: false}, {q: "DB?", a: "Datenbank", done: false}, {q: "API?", a: "Interface", done: false}]},
+                { name: "Hardware", questions: [{q: "CPU?", a: "Prozessor", done: false}, {q: "RAM?", a: "Arbeitsspeicher", done: false}, {q: "GPU?", a: "Grafikkarte", done: false}, {q: "SSD?", a: "Speicher", done: false}, {q: "PSU?", a: "Netzteil", done: false}]},
+                { name: "Internet", questions: [{q: "WWW?", a: "World Wide Web", done: false}, {q: "IP?", a: "Internet Protocol", done: false}, {q: "DNS?", a: "Domain Name System", done: false}, {q: "HTTP?", a: "Protocol", done: false}, {q: "URL?", a: "Adresse", done: false}]},
+                { name: "Gaming", questions: [{q: "NPC?", a: "Non-Player Character", done: false}, {q: "FPS?", a: "Frames per Second", done: false}, {q: "RPG?", a: "Role Playing Game", done: false}, {q: "DLC?", a: "Downloadable Content", done: false}, {q: "XP?", a: "Experience Points", done: false}]},
+                { name: "Misc", questions: [{q: "AI?", a: "Künstliche Intelligenz", done: false}, {q: "OS?", a: "Operating System", done: false}, {q: "UI?", a: "User Interface", done: false}, {q: "UX?", a: "User Experience", done: false}, {q: "CLI?", a: "Command Line Interface", done: false}]}
+            ]
+        }
+    },
+    methods: {
+        openQuestion(catIndex, rowIndex) {
+            const q = this.boardData[catIndex].questions[rowIndex];
+            if (q.done) return;
+            this.activeQuestion = { ...q, category: this.boardData[catIndex].name, value: (rowIndex + 1) * 100, cIdx: catIndex, rIdx: rowIndex };
+            this.showAnswer = false;
+        },
+        closeQuestion() {
+            this.boardData[this.activeQuestion.cIdx].questions[this.activeQuestion.rIdx].done = true;
+            this.activeQuestion = null;
+        }
+    }
+}).mount('#app')
+</script>
+</body>
+</html>
