@@ -2,13 +2,14 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Jeopardy Pro - Teams & Media</title>
+    <title>Jeopardy Pro - Smart Parser</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .jeopardy-blue { background-color: #060ce9; }
         .jeopardy-gold { color: #ffcc00; }
-        .media-container img, .media-container video { max-height: 400px; margin: 0 auto; object-fit: contain; }
+        .media-content img { max-height: 250px; border: 3px solid white; border-radius: 8px; margin: 10px auto; }
+        .media-content video { max-height: 300px; margin: 10px auto; }
         [contenteditable]:focus { outline: 2px solid #ffcc00; background: rgba(255,255,255,0.1); }
     </style>
 </head>
@@ -16,15 +17,14 @@
 
 <div id="app" class="p-4 min-h-screen flex flex-col">
     
-    <div class="flex justify-between items-center mb-6 px-4 lg:px-10">
-        <h1 class="text-3xl font-bold jeopardy-gold uppercase tracking-tighter" 
-            :contenteditable="isEditing" @blur="gameData.title = $event.target.innerText">
+    <div class="flex justify-between items-center mb-6 px-4">
+        <h1 class="text-3xl font-bold jeopardy-gold uppercase" :contenteditable="isEditing" @blur="gameData.title = $event.target.innerText">
             {{ gameData.title }}
         </h1>
         <div class="flex gap-2">
             <input type="file" id="fileInput" class="hidden" @change="loadJSON" accept=".json">
-            <button @click="triggerUpload" class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-xs font-bold uppercase tracking-widest border border-gray-600">
-                Datei laden
+            <button @click="triggerUpload" class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-xs font-bold border border-gray-600">
+                LADEN
             </button>
         </div>
     </div>
@@ -37,105 +37,61 @@
 
         <template v-for="rIdx in [0,1,2,3,4]">
             <div v-for="(cat, cIdx) in gameData.categories" @click="handleTileClick(cIdx, rIdx)"
-                 class="jeopardy-blue border-2 border-white aspect-video flex items-center justify-center text-center p-2 cursor-pointer hover:scale-[1.02] transition-all shadow-md"
+                 class="jeopardy-blue border-2 border-white aspect-video flex items-center justify-center text-center p-2 cursor-pointer hover:scale-[1.02] transition-all"
                  :class="{ 'opacity-10 pointer-events-none': cat.questions[rIdx].done && !isEditing }">
                 <span v-if="!isEditing" class="jeopardy-gold text-2xl lg:text-5xl font-bold">{{ (rIdx + 1) * 100 }}</span>
-                <span v-else class="text-[10px] uppercase opacity-50 line-clamp-2">{{ cat.questions[rIdx].q }}</span>
+                <span v-else class="text-[10px] uppercase opacity-50 line-clamp-2 italic">{{ cat.questions[rIdx].q }}</span>
             </div>
         </template>
     </div>
 
-    <div class="mt-8 mb-20 flex flex-wrap justify-center items-end gap-4 px-4">
-        <div v-for="(team, tIdx) in gameData.teams" :key="tIdx" 
-             class="jeopardy-blue border-2 border-white w-48 p-3 relative group shadow-2xl rounded-t-lg">
-            
-            <button @click="removeTeam(tIdx)" 
-                    class="absolute -top-2 -right-2 bg-red-600 text-white w-6 h-6 rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity">
-                ✕
-            </button>
-
+    <div class="mt-8 mb-20 flex flex-wrap justify-center items-end gap-4">
+        <div v-for="(team, tIdx) in gameData.teams" :key="tIdx" class="jeopardy-blue border-2 border-white w-40 p-2 relative group shadow-xl">
+            <button @click="removeTeam(tIdx)" class="absolute -top-2 -right-2 bg-red-600 w-5 h-5 rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
             <div class="text-center">
-                <div class="font-bold uppercase text-sm mb-1 truncate px-2" 
-                     contenteditable="true" @blur="team.name = $event.target.innerText">
-                    {{ team.name }}
-                </div>
-                <div class="text-3xl font-black jeopardy-gold" 
-                     contenteditable="true" @blur="team.score = parseInt($event.target.innerText) || 0">
-                    {{ team.score }}
-                </div>
+                <div class="font-bold uppercase text-[10px] mb-1 truncate px-2" contenteditable="true" @blur="team.name = $event.target.innerText">{{ team.name }}</div>
+                <div class="text-2xl font-black jeopardy-gold" contenteditable="true" @blur="team.score = parseInt($event.target.innerText) || 0">{{ team.score }}</div>
             </div>
         </div>
-
-        <button @click="addTeam" 
-                class="w-12 h-12 border-2 border-dashed border-gray-500 rounded flex items-center justify-center text-gray-500 hover:border-white hover:text-white transition-all mb-2">
-            <span class="text-2xl">+</span>
-        </button>
+        <button @click="addTeam" class="w-10 h-10 border-2 border-dashed border-gray-500 rounded flex items-center justify-center text-gray-500 hover:text-white">+</button>
     </div>
 
-    <div class="fixed bottom-6 left-6 flex gap-4 items-center z-[60]">
-        <button @click="isEditing = !isEditing" 
-                class="w-14 h-14 bg-yellow-500 text-black rounded-full shadow-2xl flex items-center justify-center text-2xl hover:rotate-12 transition-transform">
+    <div class="fixed bottom-6 left-6 flex gap-4 z-[60]">
+        <button @click="isEditing = !isEditing" class="w-14 h-14 bg-yellow-500 text-black rounded-full shadow-2xl flex items-center justify-center text-2xl">
             {{ isEditing ? '▶' : '✎' }}
         </button>
-        <button v-if="isEditing" @click="downloadJSON" 
-                class="bg-green-600 hover:bg-green-500 px-6 py-3 rounded-full font-bold shadow-lg uppercase text-xs tracking-widest">
-            Export Game.json
-        </button>
+        <button v-if="isEditing" @click="downloadJSON" class="bg-green-600 px-6 py-4 rounded-full font-bold uppercase text-xs">Export</button>
     </div>
 
-    <div v-if="activeTile" class="fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-4 lg:p-10">
-        <div class="bg-blue-900 border-4 border-white w-full max-w-5xl p-6 lg:p-10 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+    <div v-if="activeTile" class="fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-4">
+        <div class="bg-blue-900 border-4 border-white w-full max-w-4xl p-8 rounded-xl relative overflow-y-auto max-h-[90vh]">
             
             <div v-if="isEditing">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <h3 class="text-yellow-400 font-bold mb-4 uppercase">Editor Mode</h3>
+                <div class="grid gap-4">
                     <div>
-                        <label class="text-yellow-400 font-bold text-xs uppercase">Frage / Medien-URL</label>
-                        <textarea v-model="activeTile.data.q" class="w-full bg-black/50 p-4 mt-2 h-40 rounded border border-white/20 text-lg"></textarea>
-                        
-                        <label class="text-yellow-400 font-bold text-xs uppercase mt-6 block">Antwort</label>
-                        <textarea v-model="activeTile.data.a" class="w-full bg-black/50 p-4 mt-2 h-24 rounded border border-white/20 text-lg"></textarea>
+                        <label class="text-xs text-gray-300">FRAGE (Nutze /image(url), /video(url) oder /audio(url))</label>
+                        <textarea v-model="activeTile.data.q" class="w-full bg-black p-4 mt-1 h-32 rounded border border-white/20"></textarea>
                     </div>
                     <div>
-                        <label class="text-yellow-400 font-bold text-xs uppercase">Inhaltstyp</label>
-                        <select v-model="activeTile.data.type" class="w-full bg-black p-3 mt-2 border border-white/20 rounded">
-                            <option value="text">Nur Text</option>
-                            <option value="image">Bild / GIF (URL)</option>
-                            <option value="video">Video (MP4 URL)</option>
-                            <option value="audio">Audio (MP3 URL)</option>
-                        </select>
-                        <div class="mt-8 p-4 border border-dashed border-white/20 rounded text-sm text-gray-400 italic">
-                            Vorschau (Editor): {{ activeTile.data.type }} ausgewählt.
-                        </div>
+                        <label class="text-xs text-gray-300">ANTWORT</label>
+                        <textarea v-model="activeTile.data.a" class="w-full bg-black p-4 mt-1 h-24 rounded border border-white/20"></textarea>
                     </div>
                 </div>
-                <button @click="activeTile = null" class="w-full bg-green-600 mt-8 py-4 font-bold uppercase tracking-widest rounded hover:bg-green-500">Speichern & Schließen</button>
+                <button @click="activeTile = null" class="w-full bg-green-600 mt-6 py-3 font-bold uppercase rounded">Speichern</button>
             </div>
 
             <div v-else class="text-center">
-                <div class="uppercase tracking-[0.2em] text-white/50 mb-6 border-b border-white/10 pb-4">
-                    {{ activeTile.catName }} <span class="mx-4">|</span> {{ (activeTile.rIdx + 1) * 100 }} Punkte
-                </div>
+                <div class="uppercase text-white/50 mb-6 text-sm">{{ activeTile.catName }} | {{ (activeTile.rIdx + 1) * 100 }}</div>
                 
-                <div class="media-container mb-10 min-h-[300px] flex items-center justify-center">
-                    <div v-if="!showAnswer" class="w-full">
-                        <template v-if="activeTile.data.type === 'image'"><img :src="activeTile.data.q" class="rounded shadow-2xl"></template>
-                        <template v-else-if="activeTile.data.type === 'video'"><video :src="activeTile.data.q" controls autoplay class="w-full max-h-[50vh]"></video></template>
-                        <template v-else-if="activeTile.data.type === 'audio'"><audio :src="activeTile.data.q" controls autoplay class="mx-auto"></audio></template>
-                        <p v-else class="text-3xl lg:text-6xl font-bold leading-tight px-4">{{ activeTile.data.q }}</p>
-                    </div>
-                    <div v-else>
-                        <p class="text-sm uppercase text-yellow-500 mb-2">Die Antwort ist:</p>
-                        <p class="text-4xl lg:text-7xl font-bold text-white">{{ activeTile.data.a }}</p>
-                    </div>
+                <div class="media-content mb-8 text-3xl lg:text-5xl font-bold leading-tight">
+                    <div v-html="parseContent(showAnswer ? activeTile.data.a : activeTile.data.q)"></div>
                 </div>
 
-                <div class="flex flex-wrap gap-4 justify-center">
-                    <button @click="showAnswer = true" v-if="!showAnswer" 
-                            class="bg-white text-blue-900 px-12 py-4 rounded-full font-black text-2xl uppercase shadow-xl hover:scale-110 transition-transform">Lösung zeigen</button>
-                    <button @click="closeTile(true)" v-else 
-                            class="bg-yellow-500 text-black px-12 py-4 rounded-full font-black text-2xl uppercase shadow-xl hover:scale-110 transition-transform">Kachel abhaken</button>
-                    <button @click="activeTile = null" 
-                            class="border border-white/30 px-8 py-4 rounded-full font-bold uppercase hover:bg-white/10 transition-colors">Zurück</button>
+                <div class="flex gap-4 justify-center">
+                    <button @click="showAnswer = true" v-if="!showAnswer" class="bg-white text-blue-900 px-10 py-4 rounded-full font-black text-2xl uppercase">Lösung</button>
+                    <button @click="closeTile(true)" v-else class="bg-yellow-500 text-black px-10 py-4 rounded-full font-black text-2xl uppercase">Fertig</button>
+                    <button @click="activeTile = null" class="border border-white/30 px-6 py-4 rounded-full font-bold uppercase">Zurück</button>
                 </div>
             </div>
         </div>
@@ -147,65 +103,40 @@ const { createApp } = Vue
 createApp({
     data() {
         return {
-            isEditing: false, 
-            showAnswer: false, 
-            activeTile: null,
-            gameData: { 
-                title: "MEIN JEOPARDY", 
-                teams: [
-                    { name: "Team 1", score: 0 },
-                    { name: "Team 2", score: 0 }
-                ],
-                categories: Array.from({length: 5}, (_, i) => ({ 
-                    name: "KATEGORIE " + (i+1), 
-                    questions: Array.from({length: 5}, () => ({ q: "Hier Frage eintragen", a: "Hier Antwort eintragen", type: "text", done: false })) 
-                })) 
-            }
+            isEditing: false, showAnswer: false, activeTile: null,
+            gameData: { title: "MIXED MEDIA JEOPARDY", teams: [{ name: "Team 1", score: 0 }], categories: Array.from({length: 5}, (_, i) => ({ name: "KAT " + (i+1), questions: Array.from({length: 5}, () => ({ q: "Frage /image(url)", a: "Antwort", done: false })) })) }
         }
     },
     methods: {
+        parseContent(text) {
+            if (!text) return "";
+            // Regex für /type(url)
+            const mediaRegex = /\/(image|video|audio)\(([^)]+)\)/g;
+            
+            return text.replace(mediaRegex, (match, type, url) => {
+                if (type === 'image') return `<img src="${url}" class="mx-auto my-4 shadow-lg">`;
+                if (type === 'video') return `<video src="${url}" controls autoplay class="mx-auto my-4 w-full"></video>`;
+                if (type === 'audio') return `<div class="bg-black/30 p-4 rounded my-4"><audio src="${url}" controls autoplay class="mx-auto"></audio></div>`;
+                return match;
+            });
+        },
         handleTileClick(cIdx, rIdx) {
-            this.activeTile = { 
-                cIdx, rIdx, 
-                catName: this.gameData.categories[cIdx].name, 
-                data: this.gameData.categories[cIdx].questions[rIdx] 
-            };
+            this.activeTile = { cIdx, rIdx, catName: this.gameData.categories[cIdx].name, data: this.gameData.categories[cIdx].questions[rIdx] };
             this.showAnswer = false;
         },
-        closeTile(done) { 
-            if(done) this.activeTile.data.done = true; 
-            this.activeTile = null; 
-        },
-        // TEAM LOGIK
-        addTeam() {
-            this.gameData.teams.push({ name: "Neues Team", score: 0 });
-        },
-        removeTeam(idx) {
-            if(confirm("Möchtest du dieses Team wirklich löschen?")) {
-                this.gameData.teams.splice(idx, 1);
-            }
-        },
-        // DATEI LOGIK
+        closeTile(done) { if(done) this.activeTile.data.done = true; this.activeTile = null; },
+        addTeam() { this.gameData.teams.push({ name: "Team " + (this.gameData.teams.length + 1), score: 0 }); },
+        removeTeam(idx) { if(confirm("Team löschen?")) this.gameData.teams.splice(idx, 1); },
         triggerUpload() { document.getElementById('fileInput').click(); },
         loadJSON(e) {
             const reader = new FileReader();
-            reader.onload = (event) => { 
-                try {
-                    const parsed = JSON.parse(event.target.result);
-                    // Sicherstellen, dass Teams existieren, wenn alte JSON geladen wird
-                    if(!parsed.teams) parsed.teams = [{name: "Team 1", score: 0}];
-                    this.gameData = parsed; 
-                } catch(err) { alert("Fehler beim Laden der JSON-Datei."); }
-            };
+            reader.onload = (event) => { this.gameData = JSON.parse(event.target.result); };
             reader.readAsText(e.target.files[0]);
         },
         downloadJSON() {
             const blob = new Blob([JSON.stringify(this.gameData, null, 2)], {type : 'application/json'});
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); 
-            a.href = url; 
-            a.download = (this.gameData.title.toLowerCase().replace(/\s/g, '_')) + '.json'; 
-            a.click();
+            const a = document.createElement('a'); a.href = url; a.download = 'game.json'; a.click();
         }
     }
 }).mount('#app')
