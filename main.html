@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Jeopardy Pro - Custom Studio</title>
+    <title>Jeopardy Pro - Live Theme Edition</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -10,16 +10,19 @@
             --primary: #060ce9;
             --secondary: #ffcc00;
         }
+        /* Dynamische CSS Bindungen */
         .bg-primary { background-color: var(--primary); }
         .text-secondary { color: var(--secondary); }
-        .border-primary { border-color: var(--primary); }
         .border-secondary { border-color: var(--secondary); }
+        .bg-secondary { background-color: var(--secondary); }
 
         body { overflow: hidden; height: 100vh; width: 100vw; background-color: black; }
         
+        /* Der Hintergrund passt sich live der Primärfarbe an */
         .studio-background {
-            background: linear-gradient(0deg, var(--primary) -50%, rgba(0,0,0,1) 70%);
+            background: linear-gradient(0deg, var(--primary) -60%, rgba(0,0,0,1) 80%);
             height: 100vh;
+            transition: background 0.5s ease;
         }
 
         .team-footer {
@@ -30,36 +33,37 @@
 
         .podium {
             pointer-events: auto; background: var(--primary);
-            filter: brightness(1.2); opacity: 0.95; backdrop-filter: blur(10px);
-            border: 3px solid white; border-bottom: none; border-radius: 15px 15px 0 0;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.8); width: 260px; transition: transform 0.3s ease;
+            filter: brightness(1.1); border: 3px solid white; border-bottom: none; 
+            border-radius: 15px 15px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); 
+            width: 260px; transition: all 0.3s ease;
         }
         
-        .podium:hover { transform: translateY(-5px); }
+        .podium:hover { transform: translateY(-5px); filter: brightness(1.3); }
         .media-content img { max-height: 350px; border: 4px solid white; border-radius: 12px; }
-        [contenteditable]:focus { outline: none; background: rgba(255,255,255,0.1); }
+        [contenteditable]:focus { outline: none; background: rgba(255,255,255,0.1); border-radius: 4px; }
         
-        /* Tooltip-Stil für Color Picker */
-        .color-label { font-size: 10px; text-transform: uppercase; color: #aaa; font-weight: bold; }
+        .color-label { font-size: 9px; text-transform: uppercase; color: #888; font-weight: bold; margin-top: 2px; }
     </style>
 </head>
 <body class="text-white font-sans">
 
-<div id="app" class="studio-background h-screen flex flex-col relative" :style="{'--primary': gameData.theme.primary, '--secondary': gameData.theme.secondary}">
+<div id="app" class="studio-background h-screen flex flex-col relative" 
+     :style="{'--primary': gameData.theme.primary, '--secondary': gameData.theme.secondary}">
     
-    <div class="p-4 flex justify-between items-center z-10 bg-black/60 backdrop-blur-md border-b border-white/10">
+    <div class="p-4 flex justify-between items-center z-10 bg-black/70 backdrop-blur-xl border-b border-white/10 shadow-2xl">
         <div class="flex items-center gap-6">
-            <h1 class="text-xl font-black text-secondary uppercase italic tracking-tighter" :contenteditable="isEditing" @blur="gameData.title = $event.target.innerText">
+            <h1 class="text-xl font-black text-secondary uppercase italic tracking-tighter" 
+                :contenteditable="isEditing" @blur="gameData.title = $event.target.innerText">
                 {{ gameData.title }}
             </h1>
             
-            <div v-if="isEditing" class="flex gap-4 border-l border-white/20 pl-6">
+            <div v-if="isEditing" class="flex gap-6 border-l border-white/20 pl-6 animate-fade-in">
                 <div class="flex flex-col items-center">
-                    <input type="color" v-model="gameData.theme.primary" class="w-6 h-6 rounded-full cursor-pointer bg-transparent border-none">
-                    <span class="color-label">Basis</span>
+                    <input type="color" v-model="gameData.theme.primary" class="w-8 h-8 rounded-full cursor-pointer bg-transparent border-2 border-white/20">
+                    <span class="color-label">Board</span>
                 </div>
                 <div class="flex flex-col items-center">
-                    <input type="color" v-model="gameData.theme.secondary" class="w-6 h-6 rounded-full cursor-pointer bg-transparent border-none">
+                    <input type="color" v-model="gameData.theme.secondary" class="w-8 h-8 rounded-full cursor-pointer bg-transparent border-2 border-white/20">
                     <span class="color-label">Akzent</span>
                 </div>
             </div>
@@ -67,28 +71,31 @@
 
         <div class="flex gap-3">
             <button @click="isEditing = !isEditing" 
-                    class="px-4 py-1 rounded-full text-xs font-bold uppercase transition-all border-2"
-                    :class="isEditing ? 'bg-secondary text-black border-secondary' : 'border-white hover:bg-white hover:text-black'">
-                {{ isEditing ? 'Speichern' : 'Edit' }}
+                    class="px-6 py-1.5 rounded-full text-xs font-black uppercase transition-all border-2 shadow-lg"
+                    :class="isEditing ? 'bg-secondary text-white border-secondary hover:brightness-110' : 'border-white text-white hover:bg-white hover:text-black'">
+                {{ isEditing ? 'SPIELEN' : 'EDIT' }}
             </button>
-            <button @click="resetGame" class="border-2 border-red-500 text-red-500 px-4 py-1 rounded-full text-xs font-bold hover:bg-red-500 hover:text-white transition-all uppercase">
+            
+            <button @click="resetGame" class="border-2 border-red-600 text-red-600 px-4 py-1.5 rounded-full text-xs font-black hover:bg-red-600 hover:text-white transition-all uppercase shadow-lg">
                 Reset
             </button>
+            
             <input type="file" id="fileInput" class="hidden" @change="loadJSON" accept=".json">
-            <button @click="triggerUpload" class="border-2 border-white px-4 py-1 rounded-full text-xs font-bold hover:bg-white hover:text-black transition-colors uppercase">
+            <button @click="triggerUpload" class="border-2 border-white px-4 py-1.5 rounded-full text-xs font-black hover:bg-white hover:text-black transition-colors uppercase shadow-lg">
                 Import
             </button>
-            <button v-if="isEditing" @click="downloadJSON" class="bg-green-600 border-2 border-green-600 px-4 py-1 rounded-full text-xs font-bold uppercase shadow-lg">
+            
+            <button v-if="isEditing" @click="downloadJSON" class="bg-green-600 border-2 border-green-600 px-4 py-1.5 rounded-full text-xs font-black uppercase shadow-lg hover:bg-green-500">
                 Export
             </button>
         </div>
     </div>
 
-    <div class="flex-grow px-6 pb-48 pt-6 overflow-hidden flex flex-col items-center">
-        <div class="grid grid-cols-5 gap-3 w-full max-w-[1600px] h-full">
+    <div class="flex-grow px-8 pb-48 pt-8 overflow-hidden flex flex-col items-center">
+        <div class="grid grid-cols-5 gap-4 w-full max-w-[1600px] h-full">
             <div v-for="(cat, cIdx) in gameData.categories" :key="'h-'+cIdx" 
-                 class="bg-primary border-4 border-white flex items-center justify-center text-center p-2 shadow-2xl">
-                <span class="font-black text-lg lg:text-xl uppercase leading-tight" :contenteditable="isEditing" @blur="cat.name = $event.target.innerText">
+                 class="bg-primary border-4 border-white flex items-center justify-center text-center p-3 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                <span class="font-black text-lg lg:text-2xl uppercase leading-tight" :contenteditable="isEditing" @blur="cat.name = $event.target.innerText">
                     {{ cat.name }}
                 </span>
             </div>
@@ -96,16 +103,16 @@
             <template v-for="rIdx in [0,1,2,3,4]">
                 <div v-for="(cat, cIdx) in gameData.categories" 
                      @click="handleTileClick(cIdx, rIdx)"
-                     class="bg-primary border-4 border-white flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:brightness-125 relative overflow-hidden"
+                     class="bg-primary border-4 border-white flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:scale-[1.03] hover:z-10 relative overflow-hidden shadow-lg"
                      :class="{ 'opacity-10 grayscale': cat.questions[rIdx].done && !isEditing }">
                     
-                    <span v-if="!isEditing" class="text-secondary text-4xl lg:text-6xl font-black drop-shadow-lg">
+                    <span v-if="!isEditing" class="text-secondary text-5xl lg:text-7xl font-black drop-shadow-2xl">
                         {{ (rIdx + 1) * 100 }}
                     </span>
                     
-                    <div v-else class="p-1 w-full h-full flex flex-col justify-center bg-black/40">
-                        <div class="text-[9px] opacity-80 uppercase mb-1" v-html="parseContent(cat.questions[rIdx].q, true)"></div>
-                        <div class="text-[9px] text-secondary font-bold truncate italic">A: {{ cat.questions[rIdx].a }}</div>
+                    <div v-else class="p-2 w-full h-full flex flex-col justify-center bg-black/50 backdrop-blur-sm">
+                        <div class="text-[10px] opacity-90 uppercase mb-2 leading-tight" v-html="parseContent(cat.questions[rIdx].q, true)"></div>
+                        <div class="text-[10px] text-secondary font-black truncate italic border-t border-white/10 pt-1">A: {{ cat.questions[rIdx].a }}</div>
                     </div>
                 </div>
             </template>
@@ -114,50 +121,50 @@
 
     <div class="team-footer h-40">
         <div v-for="(team, tIdx) in gameData.teams" :key="tIdx" class="podium p-4 group">
-            <button @click="removeTeam(tIdx)" class="absolute -top-3 -right-3 bg-red-600 text-white w-7 h-7 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-auto shadow-xl">✕</button>
+            <button @click="removeTeam(tIdx)" class="absolute -top-3 -right-3 bg-red-600 text-white w-7 h-7 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-auto shadow-xl flex items-center justify-center">✕</button>
             <div class="text-center">
-                <div class="font-bold uppercase text-[10px] tracking-widest mb-1 opacity-70" contenteditable="true" @blur="team.name = $event.target.innerText">
+                <div class="font-bold uppercase text-[10px] tracking-widest mb-1 opacity-60" contenteditable="true" @blur="team.name = $event.target.innerText">
                     {{ team.name }}
                 </div>
-                <div class="text-5xl font-black text-secondary tracking-tighter" contenteditable="true" @blur="team.score = parseInt($event.target.innerText) || 0">
+                <div class="text-5xl font-black text-secondary tracking-tighter drop-shadow-md" contenteditable="true" @blur="team.score = parseInt($event.target.innerText) || 0">
                     {{ team.score }}
                 </div>
             </div>
         </div>
-        <button @click="addTeam" class="pointer-events-auto mb-6 w-10 h-10 bg-white/10 border-2 border-dashed border-white/30 rounded-full flex items-center justify-center hover:bg-white/20 transition-all text-white/50 hover:text-white">+</button>
+        <button @click="addTeam" class="pointer-events-auto mb-6 w-12 h-12 bg-white/10 border-2 border-dashed border-white/30 rounded-full flex items-center justify-center hover:bg-white/20 transition-all text-white/50 hover:text-white text-2xl font-light">+</button>
     </div>
 
-    <div v-if="activeTile" class="fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-6">
-        <div class="bg-primary border-8 border-white w-full max-w-5xl p-10 rounded-3xl relative shadow-2xl overflow-hidden">
+    <div v-if="activeTile" class="fixed inset-0 bg-black/98 flex items-center justify-center z-[100] p-6 backdrop-blur-md">
+        <div class="bg-primary border-[10px] border-white w-full max-w-6xl p-12 rounded-[3rem] relative shadow-[0_0_100px_rgba(255,255,255,0.1)] overflow-hidden">
             <div v-if="isEditing">
-                <h3 class="text-secondary font-black mb-6 uppercase text-2xl italic">Editor</h3>
-                <div class="grid md:grid-cols-2 gap-8">
+                <h3 class="text-secondary font-black mb-8 uppercase text-3xl italic tracking-widest border-b-4 border-secondary inline-block">Editor</h3>
+                <div class="grid md:grid-cols-2 gap-10">
                     <div>
-                        <label class="text-[10px] font-bold text-white/50 uppercase">Frage & Media /image()</label>
-                        <textarea v-model="activeTile.data.q" class="w-full bg-black/50 p-4 mt-2 h-56 rounded-xl border-2 border-white/20 text-xl"></textarea>
+                        <label class="text-xs font-black text-white/40 uppercase tracking-widest">Frage & Media /image()</label>
+                        <textarea v-model="activeTile.data.q" class="w-full bg-black/40 p-6 mt-2 h-64 rounded-2xl border-2 border-white/20 text-2xl focus:border-secondary transition-colors outline-none"></textarea>
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-white/50 uppercase">Antwort</label>
-                        <textarea v-model="activeTile.data.a" class="w-full bg-black/50 p-4 mt-2 h-56 rounded-xl border-2 border-white/20 text-xl"></textarea>
+                        <label class="text-xs font-black text-white/40 uppercase tracking-widest">Antwort</label>
+                        <textarea v-model="activeTile.data.a" class="w-full bg-black/40 p-6 mt-2 h-64 rounded-2xl border-2 border-white/20 text-2xl focus:border-secondary transition-colors outline-none"></textarea>
                     </div>
                 </div>
-                <button @click="activeTile = null" class="w-full bg-green-600 mt-8 py-4 font-black uppercase text-xl rounded-xl">Speichern</button>
+                <button @click="activeTile = null" class="w-full bg-green-600 mt-10 py-5 font-black uppercase text-2xl rounded-2xl shadow-2xl hover:bg-green-500 transition-all">Speichern</button>
             </div>
 
-            <div v-else class="text-center">
-                <div class="uppercase text-white/40 mb-8 text-xl font-black tracking-widest">{{ activeTile.catName }} | {{ activeTile.value }}</div>
-                <div class="media-content mb-12 min-h-[300px] flex items-center justify-center text-4xl lg:text-7xl font-black">
+            <div v-else class="text-center animate-zoom-in">
+                <div class="uppercase text-white/40 mb-10 text-2xl font-black tracking-[0.4em]">{{ activeTile.catName }} | {{ activeTile.value }}</div>
+                <div class="media-content mb-16 min-h-[350px] flex items-center justify-center text-4xl lg:text-7xl font-black leading-tight drop-shadow-2xl">
                     <div v-html="parseContent(showAnswer ? activeTile.data.a : activeTile.data.q)"></div>
                 </div>
-                <div class="flex flex-col gap-6 items-center">
-                    <button @click="showAnswer = true" v-if="!showAnswer" class="bg-white text-primary px-16 py-6 rounded-full font-black text-3xl uppercase shadow-xl hover:scale-105 transition-all">Lösung!</button>
+                <div class="flex flex-col gap-8 items-center">
+                    <button @click="showAnswer = true" v-if="!showAnswer" class="bg-white text-primary px-20 py-8 rounded-full font-black text-4xl uppercase shadow-2xl hover:scale-110 transition-all active:scale-95">Lösung zeigen</button>
                     <div v-else class="w-full">
-                        <p class="text-secondary uppercase font-black text-sm mb-4 tracking-widest">Punktesieg für:</p>
-                        <div class="flex flex-wrap gap-4 justify-center">
-                            <button v-for="(team, tIdx) in gameData.teams" @click="assignPoints(tIdx)" class="bg-black/40 hover:bg-black/60 border-2 border-white px-6 py-3 rounded-xl font-black uppercase text-lg transition-all hover:scale-110">
+                        <p class="text-secondary uppercase font-black text-xl mb-8 tracking-widest italic">Punktesieg für:</p>
+                        <div class="flex flex-wrap gap-6 justify-center">
+                            <button v-for="(team, tIdx) in gameData.teams" @click="assignPoints(tIdx)" class="bg-black/30 hover:bg-black/60 border-4 border-white px-10 py-5 rounded-2xl font-black uppercase text-2xl transition-all hover:scale-110">
                                 {{ team.name }}
                             </button>
-                            <button @click="closeTile(true)" class="bg-white/10 px-6 py-3 rounded-xl font-black uppercase text-lg hover:bg-white/20">Niemand</button>
+                            <button @click="closeTile(true)" class="bg-white/10 px-10 py-5 rounded-2xl font-black uppercase text-2xl border-4 border-transparent hover:bg-white/20">Niemand</button>
                         </div>
                     </div>
                 </div>
@@ -173,7 +180,7 @@ createApp({
         return {
             isEditing: false, showAnswer: false, activeTile: null,
             gameData: { 
-                title: "CUSTOM JEOPARDY", 
+                title: "STUDIO JEOPARDY", 
                 theme: { primary: '#060ce9', secondary: '#ffcc00' },
                 teams: [{ name: "TEAM 1", score: 0 }, { name: "TEAM 2", score: 0 }], 
                 categories: Array.from({length: 5}, (_, i) => ({ name: "KATEGORIE " + (i+1), questions: Array.from({length: 5}, () => ({ q: "Frage...", a: "Antwort...", done: false })) })) 
@@ -186,7 +193,7 @@ createApp({
             const mediaRegex = /\/(image|video|audio)\(([^)]+)\)/g;
             return text.replace(mediaRegex, (match, type, url) => {
                 if (type === 'image') return `<img src="${url}" class="${isPreview ? '' : 'mx-auto shadow-2xl'}">`;
-                return isPreview ? `[${type.toUpperCase()}]` : `<${type} src="${url}" controls autoplay class="mx-auto"></${type}>`;
+                return isPreview ? `[${type.toUpperCase()}]` : `<${type} src="${url}" controls autoplay class="mx-auto shadow-xl"></${type}>`;
             });
         },
         handleTileClick(cIdx, rIdx) {
@@ -196,8 +203,8 @@ createApp({
         assignPoints(teamIdx) { this.gameData.teams[teamIdx].score += this.activeTile.value; this.closeTile(true); },
         closeTile(done) { if(done) this.activeTile.data.done = true; this.activeTile = null; },
         addTeam() { this.gameData.teams.push({ name: "TEAM " + (this.gameData.teams.length + 1), score: 0 }); },
-        removeTeam(idx) { if(confirm("Löschen?")) this.gameData.teams.splice(idx, 1); },
-        resetGame() { if(confirm("Punkte und Status zurücksetzen?")) { this.gameData.teams.forEach(t => t.score = 0); this.gameData.categories.forEach(c => c.questions.forEach(q => q.done = false)); } },
+        removeTeam(idx) { if(confirm("Team löschen?")) this.gameData.teams.splice(idx, 1); },
+        resetGame() { if(confirm("Spielstand wirklich zurücksetzen?")) { this.gameData.teams.forEach(t => t.score = 0); this.gameData.categories.forEach(c => c.questions.forEach(q => q.done = false)); } },
         triggerUpload() { document.getElementById('fileInput').click(); },
         loadJSON(e) {
             const reader = new FileReader();
@@ -211,10 +218,15 @@ createApp({
         downloadJSON() {
             const blob = new Blob([JSON.stringify(this.gameData, null, 2)], {type : 'application/json'});
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = 'game.json'; a.click();
+            const a = document.createElement('a'); a.href = url; a.download = 'jeopardy_game.json'; a.click();
         }
     }
 }).mount('#app')
 </script>
+
+<style>
+@keyframes zoom-in { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.animate-zoom-in { animation: zoom-in 0.3s ease-out; }
+</style>
 </body>
 </html>
