@@ -1,0 +1,63 @@
+{
+  "title": "ULTIMATIVE MULTIMEDIA SHOW",
+  "theme": {
+    "primary": "#060ce9",
+    "secondary": "#ffcc00"
+  },
+  "teams": [
+    { "name": "Team Nerd", "score": 0 },
+    { "name": "Die Controller", "score": 0 }
+  ],
+  "categories": [
+    {
+      "name": "Musik",
+      "questions": [
+        { "q": "Welches Instrument wird oft als 'Königin der Instrumente' bezeichnet? /image(https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400)", "a": "Die Orgel", "mode": "normal", "done": false },
+        { "q": "Hör genau hin: Aus welchem Spiel stammt dieses ikonische Theme? /audio(https://www.youtube.com/watch?v=NTa6Xbzfq1U)", "a": "Super Mario Bros.", "mode": "double", "done": false },
+        { "q": "Erkenne den Künstler: Er ist bekannt für den Moonwalk. /image(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJndzR4M3B6Z3R3eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/guufsF0Az3Lpu/giphy.gif)", "a": "Michael Jackson", "mode": "normal", "done": false },
+        { "q": "Wie viele Saiten hat eine klassische Gitarre normalerweise?", "a": "6 Saiten", "mode": "normal", "done": false },
+        { "q": "Wer komponierte die '9. Sinfonie'?", "a": "Ludwig van Beethoven", "mode": "triple", "done": false }
+      ]
+    },
+    {
+      "name": "Videospiele",
+      "questions": [
+        { "q": "Wie heißt der Klempner von Nintendo? /image(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmN4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/atfHlwAhizfxdCOVEe/giphy.gif)", "a": "Mario", "mode": "normal", "done": false },
+        { "q": "In welchem Spiel kämpft man in einer Arena 'Battle Royale' gegen 99 andere?", "a": "Fortnite", "mode": "normal", "done": false },
+        { "q": "Wie heißt das grüne Wesen, das oft fälschlicherweise für 'Zelda' gehalten wird?", "a": "Link", "mode": "double", "done": false },
+        { "q": "Welches Studio entwickelte 'The Witcher 3'?", "a": "CD Projekt Red", "mode": "normal", "done": false },
+        { "q": "Nenne das Jahr, in dem der erste Game Boy erschien.", "a": "1989", "mode": "triple", "done": false }
+      ]
+    },
+    {
+      "name": "Minecraft",
+      "questions": [
+        { "q": "Aus welchem Material baut man das Portal ins Nether?", "a": "Obsidian", "mode": "normal", "done": false },
+        { "q": "", "a": "", "mode": "joker", "done": false },
+        { "q": "Sound-Rätsel: Welcher Block wird hier gerade abgebaut? /audio(https://www.youtube.com/watch?v=MXibe4aNdGg)", "a": "Stein (Stone)", "mode": "double", "done": false },
+        { "q": "Welches Monster explodiert, wenn man ihm zu nahe kommt? /image(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnN4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/rC969RcM8z5Nm/giphy.gif)", "a": "Creeper", "mode": "normal", "done": false },
+        { "q": "Wie heißt die Dimension, in der man gegen den Drachen kämpft?", "a": "The End", "mode": "normal", "done": false }
+      ]
+    },
+    {
+      "name": "Brettspiele",
+      "questions": [
+        { "q": "Welche Farbe hat die teuerste Straße bei Monopoly? /image(https://upload.wikimedia.org/wikipedia/commons/d/d4/Monopoly_board_game.jpg)", "a": "Dunkelblau", "mode": "normal", "done": false },
+        { "q": "Schau dir diesen kurzen Clip an: Wie viele Siegpunkte braucht man in diesem Spiel normalerweise? /video(https://www.youtube.com/watch?v=qfqcIbDWdLM)", "a": "10 Siegpunkte", "mode": "double", "done": false },
+        { "q": "Wie viele Spielfiguren hat jeder Spieler bei 'Mensch ärgere dich nicht'?", "a": "4 Figuren", "mode": "normal", "done": false },
+        { "q": "In welchem Spiel baut man Siedlungen auf Sechseckfeldern?", "a": "Catan", "mode": "normal", "done": false },
+        { "q": "Aus wie vielen Feldern besteht ein Standard-Schachbrett?", "a": "64 (8x8)", "mode": "triple", "done": false }
+      ]
+    },
+    {
+      "name": "Computer",
+      "questions": [
+        { "q": "Wofür steht die Abkürzung 'CPU'?", "a": "Central Processing Unit", "mode": "normal", "done": false },
+        { "q": "Welches Betriebssystem nutzt diesen Pinguin? /image(https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg)", "a": "Linux", "mode": "normal", "done": false },
+        { "q": "Was ist das Binärsystem?", "a": "Ein Zahlensystem aus 0 und 1", "mode": "double", "done": false },
+        { "q": "", "a": "", "mode": "joker", "done": false },
+        { "q": "Wer gründete Microsoft zusammen mit Paul Allen?", "a": "Bill Gates", "mode": "triple", "done": false }
+      ]
+    }
+  ]
+}
