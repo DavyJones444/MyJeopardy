@@ -5,58 +5,193 @@
     "secondary": "#ffcc00"
   },
   "teams": [
-    { "name": "Team 1", "score": 0 },
-    { "name": "Team 2", "score": 0 }
+    {
+      "name": "Teamer",
+      "score": 0
+    },
+    {
+      "name": "Konfis 1",
+      "score": 0
+    },
+    {
+      "name": "Konfis 2",
+      "score": 0
+    }
   ],
   "categories": [
     {
       "name": "Bibel",
       "questions": [
-        { "q": "In diese zwei Bücher ist die Bibel aufgeteilt", "a": "Was sind das Alte und das Neue Testament?", "mode": "normal", "done": false },
-        { "q": "In diese Sprache übersetzte Luther die Bibel", "a": "Was ist Deutsch?", "mode": "normal", "done": false },
-        { "q": "In diesen zwei Texten geht es um Jesus Geburt.", "a": "Was sind das Matthäus- und das Lukasevangelium?", "mode": "normal", "done": false },
-        { "q": "", "a": "", "mode": "joker", "done": false },
-        { "q": "Das bedeutet Evangelium", "a": "Was ist die Gute Nachricht / Frohe Botschaft?", "mode": "normal", "done": false }
+        {
+          "q": "In diese zwei Bücher ist die Bibel aufgeteilt",
+          "a": "Was sind das Alte und das Neue Testament?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "In diese Sprache übersetzte Luther die Bibel /image(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmJlejlmZmoydmJsNHNkd2gydDVwanBxM3JhZGZzeWtpbjM0ZW5pZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ACeIDlMpgc4yOf1Lyt/giphy.gif)",
+          "a": "Was ist Deutsch?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "In diesen zwei Texten geht es um Jesus Geburt. /image(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN241dzRwajBydmZ4ZTkzMTdpcHZ6MXNpMTFwbG5iZGZ2MDU4cDRwYyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/dZ858lbbBTDwI/giphy.gif)",
+          "a": "Was sind das Matthäus- und das Lukasevangelium?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "",
+          "a": "",
+          "mode": "joker",
+          "done": false
+        },
+        {
+          "q": "Das bedeutet Evangelium /image(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmJobjNnanV6Z3RzZGxyMmRmdHdwaTlvc2F0Ym9idWd1dGsxdG9jcSZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/FY8c5SKwiNf1EtZKGs/giphy.gif)",
+          "a": "Was ist die Gute Nachricht / Frohe Botschaft?",
+          "mode": "normal",
+          "done": false
+        }
       ]
     },
     {
       "name": "Gottesdienst",
       "questions": [
-        { "q": "Er/Sie hält den Gottesdienst", "a": "Wer ist der Pfarrer / die Pfarrerin?", "mode": "double", "done": false },
-        { "q": "Das steht im Mittelpunkt eines evangelischen Gottesdienstes", "a": "Was ist die Predigt?", "mode": "normal", "done": false },
-        { "q": "Das sind zwei Gemeinsamkeiten von katholischen und evangelischen Gottesdiensten.", "a": "Was sind Gebet, Segen, Orgel oder Bibellesung?", "mode": "normal", "done": false },
-        { "q": "Deshalb gibt es in einer evangelischen Kirche kein Weihwasser", "a": "Was ist die Überzeugung, dass Gott Menschen segnet und keine Gegenstände?", "mode": "normal", "done": false },
-        { "q": "Das ist der Geburtstag der Kirche", "a": "Was ist Pfingsten?", "mode": "normal", "done": false }
+        {
+          "q": "Er/Sie hält den Gottesdienst",
+          "a": "Wer ist der Pfarrer / die Pfarrerin?",
+          "mode": "double",
+          "done": false
+        },
+        {
+          "q": "Das steht im Mittelpunkt eines evangelischen Gottesdienstes",
+          "a": "Was ist die Predigt?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "Das sind zwei Gemeinsamkeiten von katholischen und evangelischen Gottesdiensten.",
+          "a": "Was sind Gebet, Segen, Orgel oder Bibellesung?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "Deshalb gibt es in einer evangelischen Kirche kein Weihwasser /image(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3p5aGQzYTh5ZGk2MGRpb3Jvejg5Z3BhbWMwdzd5NTVpZzVuN3BueiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/AAsj7jdrHjtp6/giphy.gif)",
+          "a": "Was ist die Überzeugung, dass Gott Menschen segnet und keine Gegenstände?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "Das ist der Geburtstag der Kirche",
+          "a": "Was ist Pfingsten?",
+          "mode": "normal",
+          "done": false
+        }
       ]
     },
     {
       "name": "Evangelische Kirche",
       "questions": [
-        { "q": "Das ist das wichtigste Gebet der Christen", "a": "Was ist das Vaterunser?", "mode": "normal", "done": false },
-        { "q": "Das sind zwei evangelische Sakramente", "a": "Was sind die Taufe und das Abendmahl?", "mode": "normal", "done": false },
-        { "q": "Durch ihn entstand die evangelische Kirche", "a": "Wer ist Martin Luther?", "mode": "normal", "done": false },
-        { "q": "An diesem Tag werden die evangelischen Christen im kirchlichen Sinne volljährig", "a": "Was ist der Tag der Konfirmation?", "mode": "normal", "done": false },
-        { "q": "Das ist der Grund, warum wir nicht Papst werden können", "a": "Was ist die Nicht-Anerkennung des Papstamtes durch die ev. Kirche?", "mode": "normal", "done": false }
+        {
+          "q": "Das ist das wichtigste Gebet der Christen",
+          "a": "Was ist das Vaterunser? /image(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXh3b29iNnl1MmFubDg5cDY2bGV0aXg5OGkzOXYxM29tZ2FvZHVodSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/KcTUHvjeVtMiMoG0S3/giphy.gif)",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "Das sind zwei evangelische Sakramente /image(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3p5aGQzYTh5ZGk2MGRpb3Jvejg5Z3BhbWMwdzd5NTVpZzVuN3BueiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/iJxHU0Fo2uMxLlmWgd/giphy.gif)",
+          "a": "Was sind die Taufe und das Abendmahl?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "Durch ihn entstand die evangelische Kirche",
+          "a": "Wer ist Martin Luther?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "An diesem Tag werden die evangelischen Christen im kirchlichen Sinne volljährig",
+          "a": "Was ist der Tag der Konfirmation?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "Das ist der Grund, warum wir nicht Papst werden können /image(https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExa3g4b3NjaWtyeDh5N2xlZzFzaWlteG14YjN2MDdwejFhZGgyazZzeSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/osNanGQpdJZfXgEQU3/giphy.gif)",
+          "a": "Was ist die Nicht-Anerkennung des Papstamtes durch die ev. Kirche?",
+          "mode": "normal",
+          "done": false
+        }
       ]
     },
     {
       "name": "Katholische Kirche",
       "questions": [
-        { "q": "Wer ist die 'Himmelsgöttin'?", "a": "Wer ist Maria?", "mode": "triple", "done": false },
-        { "q": "An diesem Ort kann man sich seine Sünden von der Seele sprechen", "a": "Was ist der Beichtstuhl?", "mode": "normal", "done": false },
-        { "q": "In dieser Zeit spaltete sich die Kirche", "a": "Was ist die Reformationszeit?", "mode": "normal", "done": false },
-        { "q": "So viele katholische Sakramente gibt es", "a": "Wie viele sind sieben?", "mode": "normal", "done": false },
-        { "q": "Das ist der Fachbegriff für das katholische Abendmahl", "a": "Was ist die Eucharistie?", "mode": "normal", "done": false }
+        {
+          "q": "Wer ist die 'Himmelsgöttin'? /image(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2x3MzhjN2ZzaWw0YXNpeXU4cjQxdGt3bjFub2wyNmJtMmJjNW9sZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/nZb8Jn3AKBNB4BiZPt/giphy.gif)",
+          "a": "Wer ist Maria?",
+          "mode": "triple",
+          "done": false
+        },
+        {
+          "q": "An diesem Ort kann man sich seine Sünden von der Seele sprechen /image(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMm9vNW1zOWtlOTgwZDA2b2FpNGk1b3ozYzR0aXd2MnVrZ3Q1dThiZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26FPoBseEWXDRDhQI/giphy.gif)",
+          "a": "Was ist der Beichtstuhl?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "In dieser Zeit spaltete sich die Kirche",
+          "a": "Was ist die Reformationszeit?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "So viele katholische Sakramente gibt es",
+          "a": "Wie viele sind sieben?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "Das ist der Fachbegriff für das katholische Abendmahl",
+          "a": "Was ist die Eucharistie?",
+          "mode": "normal",
+          "done": false
+        }
       ]
     },
     {
       "name": "Abendmahl",
       "questions": [
-        { "q": "Das wurde beim letzten Abendmahl verzehrt", "a": "Was sind Brot und Wein?", "mode": "normal", "done": false },
-        { "q": "Von diesem Jünger wusste Jesus, dass er ihn verraten wird", "a": "Wer ist Judas Iskariot?", "mode": "normal", "done": false },
-        { "q": "So viele Leute waren beim letzten Abendmahl anwesend", "a": "Wie viele sind dreizehn?", "mode": "normal", "done": false },
-        { "q": "Dieser Künstler hat ein sehr bekanntes Bild über das Abendmahl gemalt.", "a": "Wer ist Leonardo da Vinci?", "mode": "normal", "done": false },
-        { "q": "Hier ist Jesus nach dem letzten Abendmahl hin und hat gebetet", "a": "Was ist der Garten Gethsemane?", "mode": "normal", "done": false }
+        {
+          "q": "Das wurde beim letzten Abendmahl verzehrt",
+          "a": "Was sind Brot und Wein?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "Von diesem Jünger wusste Jesus, dass er ihn verraten wird",
+          "a": "Wer ist Judas Iskariot?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "So viele Leute waren beim letzten Abendmahl anwesend",
+          "a": "Wie viele sind dreizehn?",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "Dieser Künstler hat ein sehr bekanntes Bild über das Abendmahl gemalt.",
+          "a": "Wer ist Leonardo da Vinci? /image(https://bilder.deutschlandfunk.de/FI/LE/_4/6d/FILE_46d2a768722ea4cfebdc3f0447de74be/03-kakadu-jpg-102-1280x720.jpg)",
+          "mode": "normal",
+          "done": false
+        },
+        {
+          "q": "Hier ist Jesus nach dem letzten Abendmahl hin und hat gebetet /image(https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXh3b29iNnl1MmFubDg5cDY2bGV0aXg5OGkzOXYxM29tZ2FvZHVodSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/dC0J4dlgo33ICrHo8s/giphy.gif)",
+          "a": "Was ist der Garten Gethsemane?",
+          "mode": "normal",
+          "done": false
+        }
       ]
     }
   ]
