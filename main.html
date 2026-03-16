@@ -2,60 +2,75 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Jeopardy Pro - Studio Final Edition</title>
+    <title>Jeopardy Pro - Custom Studio</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .jeopardy-blue { background-color: #060ce9; }
-        .jeopardy-gold { color: #ffcc00; }
+        :root {
+            --primary: #060ce9;
+            --secondary: #ffcc00;
+        }
+        .bg-primary { background-color: var(--primary); }
+        .text-secondary { color: var(--secondary); }
+        .border-primary { border-color: var(--primary); }
+        .border-secondary { border-color: var(--secondary); }
+
         body { overflow: hidden; height: 100vh; width: 100vw; background-color: black; }
         
-        /* Der gewünschte Farbverlauf von unten nach oben */
         .studio-background {
-            background: linear-gradient(0deg, rgba(6, 12, 233, 0.4) 0%, rgba(0,0,0,1) 60%);
+            background: linear-gradient(0deg, var(--primary) -50%, rgba(0,0,0,1) 70%);
             height: 100vh;
         }
 
         .team-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 50;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 1.5rem;
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+            display: flex; justify-content: center; align-items: flex-end; gap: 1.5rem;
             pointer-events: none;
         }
 
         .podium {
-            pointer-events: auto;
-            background: rgba(6, 12, 233, 0.9);
-            backdrop-filter: blur(10px);
-            border: 3px solid white;
-            border-bottom: none;
-            border-radius: 15px 15px 0 0;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
-            width: 260px;
-            transition: transform 0.3s ease;
+            pointer-events: auto; background: var(--primary);
+            filter: brightness(1.2); opacity: 0.95; backdrop-filter: blur(10px);
+            border: 3px solid white; border-bottom: none; border-radius: 15px 15px 0 0;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.8); width: 260px; transition: transform 0.3s ease;
         }
         
         .podium:hover { transform: translateY(-5px); }
-
         .media-content img { max-height: 350px; border: 4px solid white; border-radius: 12px; }
-        [contenteditable]:focus { outline: none; background: rgba(255,204,0,0.2); }
+        [contenteditable]:focus { outline: none; background: rgba(255,255,255,0.1); }
+        
+        /* Tooltip-Stil für Color Picker */
+        .color-label { font-size: 10px; text-transform: uppercase; color: #aaa; font-weight: bold; }
     </style>
 </head>
 <body class="text-white font-sans">
 
-<div id="app" class="studio-background h-screen flex flex-col relative">
+<div id="app" class="studio-background h-screen flex flex-col relative" :style="{'--primary': gameData.theme.primary, '--secondary': gameData.theme.secondary}">
     
-    <div class="p-4 flex justify-between items-center z-10 bg-black/40 backdrop-blur-md">
-        <h1 class="text-2xl font-black jeopardy-gold uppercase italic tracking-tighter" :contenteditable="isEditing" @blur="gameData.title = $event.target.innerText">
-            {{ gameData.title }}
-        </h1>
+    <div class="p-4 flex justify-between items-center z-10 bg-black/60 backdrop-blur-md border-b border-white/10">
+        <div class="flex items-center gap-6">
+            <h1 class="text-xl font-black text-secondary uppercase italic tracking-tighter" :contenteditable="isEditing" @blur="gameData.title = $event.target.innerText">
+                {{ gameData.title }}
+            </h1>
+            
+            <div v-if="isEditing" class="flex gap-4 border-l border-white/20 pl-6">
+                <div class="flex flex-col items-center">
+                    <input type="color" v-model="gameData.theme.primary" class="w-6 h-6 rounded-full cursor-pointer bg-transparent border-none">
+                    <span class="color-label">Basis</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <input type="color" v-model="gameData.theme.secondary" class="w-6 h-6 rounded-full cursor-pointer bg-transparent border-none">
+                    <span class="color-label">Akzent</span>
+                </div>
+            </div>
+        </div>
+
         <div class="flex gap-3">
+            <button @click="isEditing = !isEditing" 
+                    class="px-4 py-1 rounded-full text-xs font-bold uppercase transition-all border-2"
+                    :class="isEditing ? 'bg-secondary text-black border-secondary' : 'border-white hover:bg-white hover:text-black'">
+                {{ isEditing ? 'Speichern' : 'Edit' }}
+            </button>
             <button @click="resetGame" class="border-2 border-red-500 text-red-500 px-4 py-1 rounded-full text-xs font-bold hover:bg-red-500 hover:text-white transition-all uppercase">
                 Reset
             </button>
@@ -63,16 +78,16 @@
             <button @click="triggerUpload" class="border-2 border-white px-4 py-1 rounded-full text-xs font-bold hover:bg-white hover:text-black transition-colors uppercase">
                 Import
             </button>
-            <button v-if="isEditing" @click="downloadJSON" class="bg-green-600 px-4 py-1 rounded-full text-xs font-bold uppercase shadow-lg">
+            <button v-if="isEditing" @click="downloadJSON" class="bg-green-600 border-2 border-green-600 px-4 py-1 rounded-full text-xs font-bold uppercase shadow-lg">
                 Export
             </button>
         </div>
     </div>
 
-    <div class="flex-grow px-6 pb-48 pt-4 overflow-hidden flex flex-col items-center">
+    <div class="flex-grow px-6 pb-48 pt-6 overflow-hidden flex flex-col items-center">
         <div class="grid grid-cols-5 gap-3 w-full max-w-[1600px] h-full">
             <div v-for="(cat, cIdx) in gameData.categories" :key="'h-'+cIdx" 
-                 class="jeopardy-blue border-4 border-white flex items-center justify-center text-center p-2 shadow-2xl">
+                 class="bg-primary border-4 border-white flex items-center justify-center text-center p-2 shadow-2xl">
                 <span class="font-black text-lg lg:text-xl uppercase leading-tight" :contenteditable="isEditing" @blur="cat.name = $event.target.innerText">
                     {{ cat.name }}
                 </span>
@@ -81,50 +96,41 @@
             <template v-for="rIdx in [0,1,2,3,4]">
                 <div v-for="(cat, cIdx) in gameData.categories" 
                      @click="handleTileClick(cIdx, rIdx)"
-                     class="jeopardy-blue border-4 border-white flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:brightness-125 relative overflow-hidden"
+                     class="bg-primary border-4 border-white flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:brightness-125 relative overflow-hidden"
                      :class="{ 'opacity-10 grayscale': cat.questions[rIdx].done && !isEditing }">
                     
-                    <span v-if="!isEditing" class="jeopardy-gold text-4xl lg:text-6xl font-black drop-shadow-lg">
+                    <span v-if="!isEditing" class="text-secondary text-4xl lg:text-6xl font-black drop-shadow-lg">
                         {{ (rIdx + 1) * 100 }}
                     </span>
                     
-                    <div v-else class="p-1 w-full h-full flex flex-col justify-center bg-black/20">
+                    <div v-else class="p-1 w-full h-full flex flex-col justify-center bg-black/40">
                         <div class="text-[9px] opacity-80 uppercase mb-1" v-html="parseContent(cat.questions[rIdx].q, true)"></div>
-                        <div class="text-[9px] text-yellow-400 font-bold truncate italic">A: {{ cat.questions[rIdx].a }}</div>
+                        <div class="text-[9px] text-secondary font-bold truncate italic">A: {{ cat.questions[rIdx].a }}</div>
                     </div>
                 </div>
             </template>
         </div>
     </div>
 
-    <div class="team-footer h-44">
-        <div v-for="(team, tIdx) in gameData.teams" :key="tIdx" class="podium p-5 group">
+    <div class="team-footer h-40">
+        <div v-for="(team, tIdx) in gameData.teams" :key="tIdx" class="podium p-4 group">
             <button @click="removeTeam(tIdx)" class="absolute -top-3 -right-3 bg-red-600 text-white w-7 h-7 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-auto shadow-xl">✕</button>
-            
             <div class="text-center">
-                <div class="font-bold uppercase text-xs tracking-widest mb-1 opacity-80" contenteditable="true" @blur="team.name = $event.target.innerText">
+                <div class="font-bold uppercase text-[10px] tracking-widest mb-1 opacity-70" contenteditable="true" @blur="team.name = $event.target.innerText">
                     {{ team.name }}
                 </div>
-                <div class="text-5xl font-black jeopardy-gold tracking-tighter" contenteditable="true" @blur="team.score = parseInt($event.target.innerText) || 0">
+                <div class="text-5xl font-black text-secondary tracking-tighter" contenteditable="true" @blur="team.score = parseInt($event.target.innerText) || 0">
                     {{ team.score }}
                 </div>
             </div>
         </div>
-
-        <button @click="addTeam" class="pointer-events-auto mb-8 w-12 h-12 bg-white/10 border-2 border-dashed border-white/30 rounded-full flex items-center justify-center hover:bg-white/20 transition-all text-xl text-white/50 hover:text-white">
-            +
-        </button>
+        <button @click="addTeam" class="pointer-events-auto mb-6 w-10 h-10 bg-white/10 border-2 border-dashed border-white/30 rounded-full flex items-center justify-center hover:bg-white/20 transition-all text-white/50 hover:text-white">+</button>
     </div>
 
-    <button @click="isEditing = !isEditing" class="fixed left-6 bottom-48 z-[60] w-14 h-14 bg-yellow-500 text-black rounded-full shadow-2xl flex items-center justify-center text-2xl hover:scale-110 transition-transform">
-        {{ isEditing ? '▶' : '✎' }}
-    </button>
-
-    <div v-if="activeTile" class="fixed inset-0 bg-blue-950/98 flex items-center justify-center z-[100] p-6">
-        <div class="bg-blue-900 border-8 border-white w-full max-w-5xl p-10 rounded-3xl relative shadow-2xl">
-            
+    <div v-if="activeTile" class="fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-6">
+        <div class="bg-primary border-8 border-white w-full max-w-5xl p-10 rounded-3xl relative shadow-2xl overflow-hidden">
             <div v-if="isEditing">
-                <h3 class="text-yellow-400 font-black mb-6 uppercase text-2xl italic tracking-widest">Editor</h3>
+                <h3 class="text-secondary font-black mb-6 uppercase text-2xl italic">Editor</h3>
                 <div class="grid md:grid-cols-2 gap-8">
                     <div>
                         <label class="text-[10px] font-bold text-white/50 uppercase">Frage & Media /image()</label>
@@ -135,25 +141,23 @@
                         <textarea v-model="activeTile.data.a" class="w-full bg-black/50 p-4 mt-2 h-56 rounded-xl border-2 border-white/20 text-xl"></textarea>
                     </div>
                 </div>
-                <button @click="activeTile = null" class="w-full bg-green-600 mt-8 py-4 font-black uppercase text-xl rounded-xl shadow-lg">Speichern</button>
+                <button @click="activeTile = null" class="w-full bg-green-600 mt-8 py-4 font-black uppercase text-xl rounded-xl">Speichern</button>
             </div>
 
             <div v-else class="text-center">
                 <div class="uppercase text-white/40 mb-8 text-xl font-black tracking-widest">{{ activeTile.catName }} | {{ activeTile.value }}</div>
-                <div class="media-content mb-12 min-h-[300px] flex items-center justify-center text-4xl lg:text-6xl font-black">
+                <div class="media-content mb-12 min-h-[300px] flex items-center justify-center text-4xl lg:text-7xl font-black">
                     <div v-html="parseContent(showAnswer ? activeTile.data.a : activeTile.data.q)"></div>
                 </div>
-
                 <div class="flex flex-col gap-6 items-center">
-                    <button @click="showAnswer = true" v-if="!showAnswer" class="bg-white text-blue-900 px-16 py-6 rounded-full font-black text-3xl uppercase shadow-xl hover:scale-105 transition-all">Lösung!</button>
-                    
+                    <button @click="showAnswer = true" v-if="!showAnswer" class="bg-white text-primary px-16 py-6 rounded-full font-black text-3xl uppercase shadow-xl hover:scale-105 transition-all">Lösung!</button>
                     <div v-else class="w-full">
-                        <p class="text-yellow-500 uppercase font-black text-sm mb-4 tracking-widest">Punktesieg für:</p>
+                        <p class="text-secondary uppercase font-black text-sm mb-4 tracking-widest">Punktesieg für:</p>
                         <div class="flex flex-wrap gap-4 justify-center">
-                            <button v-for="(team, tIdx) in gameData.teams" @click="assignPoints(tIdx)" class="bg-blue-600 hover:bg-blue-500 border-2 border-white px-6 py-3 rounded-xl font-black uppercase text-lg transition-all hover:scale-110">
+                            <button v-for="(team, tIdx) in gameData.teams" @click="assignPoints(tIdx)" class="bg-black/40 hover:bg-black/60 border-2 border-white px-6 py-3 rounded-xl font-black uppercase text-lg transition-all hover:scale-110">
                                 {{ team.name }}
                             </button>
-                            <button @click="closeTile(true)" class="bg-gray-800 px-6 py-3 rounded-xl font-black uppercase text-lg">Niemand</button>
+                            <button @click="closeTile(true)" class="bg-white/10 px-6 py-3 rounded-xl font-black uppercase text-lg hover:bg-white/20">Niemand</button>
                         </div>
                     </div>
                 </div>
@@ -168,7 +172,12 @@ createApp({
     data() {
         return {
             isEditing: false, showAnswer: false, activeTile: null,
-            gameData: { title: "TV SHOW JEOPARDY", teams: [{ name: "TEAM 1", score: 0 }, { name: "TEAM 2", score: 0 }], categories: Array.from({length: 5}, (_, i) => ({ name: "KATEGORIE " + (i+1), questions: Array.from({length: 5}, () => ({ q: "Frage...", a: "Antwort...", done: false })) })) }
+            gameData: { 
+                title: "CUSTOM JEOPARDY", 
+                theme: { primary: '#060ce9', secondary: '#ffcc00' },
+                teams: [{ name: "TEAM 1", score: 0 }, { name: "TEAM 2", score: 0 }], 
+                categories: Array.from({length: 5}, (_, i) => ({ name: "KATEGORIE " + (i+1), questions: Array.from({length: 5}, () => ({ q: "Frage...", a: "Antwort...", done: false })) })) 
+            }
         }
     },
     methods: {
@@ -187,19 +196,16 @@ createApp({
         assignPoints(teamIdx) { this.gameData.teams[teamIdx].score += this.activeTile.value; this.closeTile(true); },
         closeTile(done) { if(done) this.activeTile.data.done = true; this.activeTile = null; },
         addTeam() { this.gameData.teams.push({ name: "TEAM " + (this.gameData.teams.length + 1), score: 0 }); },
-        removeTeam(idx) { if(confirm("Team löschen?")) this.gameData.teams.splice(idx, 1); },
-        // RESET FUNKTION
-        resetGame() {
-            if(confirm("Möchtest du alle Punkte und Fragen zurücksetzen? (Der Inhalt bleibt bestehen)")) {
-                this.gameData.teams.forEach(t => t.score = 0);
-                this.gameData.categories.forEach(c => c.questions.forEach(q => q.done = false));
-                alert("Spiel wurde zurückgesetzt!");
-            }
-        },
+        removeTeam(idx) { if(confirm("Löschen?")) this.gameData.teams.splice(idx, 1); },
+        resetGame() { if(confirm("Punkte und Status zurücksetzen?")) { this.gameData.teams.forEach(t => t.score = 0); this.gameData.categories.forEach(c => c.questions.forEach(q => q.done = false)); } },
         triggerUpload() { document.getElementById('fileInput').click(); },
         loadJSON(e) {
             const reader = new FileReader();
-            reader.onload = (event) => { try { this.gameData = JSON.parse(event.target.result); } catch(e) { alert("Fehler!"); } };
+            reader.onload = (event) => { 
+                const data = JSON.parse(event.target.result);
+                if(!data.theme) data.theme = { primary: '#060ce9', secondary: '#ffcc00' };
+                this.gameData = data; 
+            };
             reader.readAsText(e.target.files[0]);
         },
         downloadJSON() {
