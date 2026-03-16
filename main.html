@@ -2,83 +2,94 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeopardy Editor & Player</title>
+    <title>Jeopardy Pro - Media & Upload</title>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .jeopardy-blue { background-color: #060ce9; }
         .jeopardy-gold { color: #ffcc00; }
-        [contenteditable]:focus { outline: 2px solid #ffcc00; background: rgba(255,255,255,0.1); }
+        .media-container img, .media-container video { max-height: 300px; margin: 0 auto; }
     </style>
 </head>
-<body class="bg-black text-white font-sans overflow-x-hidden">
+<body class="bg-black text-white font-sans">
 
-<div id="app" class="p-4 min-h-screen flex flex-col">
-    <h1 class="text-4xl text-center mb-8 font-bold jeopardy-gold uppercase tracking-widest outline-none"
-        :contenteditable="isEditing" 
-        @blur="updateTitle($event)">
-        {{ gameData.title }}
-    </h1>
+<div id="app" class="p-4 min-h-screen">
+    <div class="flex justify-between items-center mb-6 px-10">
+        <h1 class="text-3xl font-bold jeopardy-gold uppercase" :contenteditable="isEditing" @blur="gameData.title = $event.target.innerText">
+            {{ gameData.title }}
+        </h1>
+        <div class="flex gap-2">
+            <input type="file" id="fileInput" class="hidden" @change="loadJSON" accept=".json">
+            <button @click="triggerUpload" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-sm font-bold">
+                Datei laden (game.json)
+            </button>
+        </div>
+    </div>
 
-    <div class="grid grid-cols-5 gap-2 max-w-6xl mx-auto flex-grow">
+    <div class="grid grid-cols-5 gap-2 max-w-7xl mx-auto">
         <div v-for="(cat, cIdx) in gameData.categories" :key="'h-'+cIdx" 
-             class="jeopardy-blue border-2 border-white p-2 text-center font-bold text-lg uppercase h-20 flex items-center justify-center overflow-hidden">
-            <span :contenteditable="isEditing" @blur="updateCatName(cIdx, $event)">{{ cat.name }}</span>
+             class="jeopardy-blue border-2 border-white p-2 text-center font-bold text-lg h-20 flex items-center justify-center">
+            <span :contenteditable="isEditing" @blur="cat.name = $event.target.innerText">{{ cat.name }}</span>
         </div>
 
-        <template v-for="rIdx in [0, 1, 2, 3, 4]">
-            <div v-for="(cat, cIdx) in gameData.categories" :key="cIdx + '-' + rIdx"
-                 @click="handleTileClick(cIdx, rIdx)"
-                 class="jeopardy-blue border-2 border-white aspect-video flex items-center justify-center text-center p-2 cursor-pointer hover:bg-blue-700 transition-colors relative"
-                 :class="{ 'opacity-30': cat.questions[rIdx].done && !isEditing }">
-                
-                <span v-if="!isEditing" class="jeopardy-gold text-4xl font-bold">
-                    {{ (rIdx + 1) * 100 }}
-                </span>
-                <span v-else class="text-xs italic opacity-80 line-clamp-3">
-                    Q: {{ cat.questions[rIdx].q || 'Leer' }}
-                </span>
+        <template v-for="rIdx in [0,1,2,3,4]">
+            <div v-for="(cat, cIdx) in gameData.categories" @click="handleTileClick(cIdx, rIdx)"
+                 class="jeopardy-blue border-2 border-white aspect-video flex items-center justify-center text-center p-2 cursor-pointer hover:bg-blue-700 transition-all"
+                 :class="{ 'opacity-20 pointer-events-none': cat.questions[rIdx].done && !isEditing }">
+                <span v-if="!isEditing" class="jeopardy-gold text-4xl font-bold">{{ (rIdx + 1) * 100 }}</span>
+                <span v-else class="text-[10px] uppercase opacity-50">{{ cat.questions[rIdx].q.substring(0,20) }}...</span>
             </div>
         </template>
     </div>
 
-    <div class="fixed bottom-6 left-6 flex gap-4">
-        <button @click="isEditing = !isEditing" 
-                class="w-14 h-14 bg-yellow-500 text-black rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-transform">
-            <span v-if="!isEditing" title="Editor öffnen">✎</span>
-            <span v-else title="Spiel starten">▶</span>
+    <div class="fixed bottom-6 left-6 flex gap-4 items-center">
+        <button @click="isEditing = !isEditing" class="w-14 h-14 bg-yellow-500 text-black rounded-full shadow-xl flex items-center justify-center text-2xl">
+            {{ isEditing ? '▶' : '✎' }}
         </button>
-        
-        <button v-if="isEditing" @click="downloadJSON" 
-                class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold shadow-lg hover:bg-green-700">
-            Game.json exportieren
-        </button>
+        <button v-if="isEditing" @click="downloadJSON" class="bg-green-600 px-4 py-2 rounded font-bold">Export</button>
     </div>
 
-    <div v-if="activeTile" class="fixed inset-0 bg-blue-900 flex flex-col items-center justify-center p-6 z-50">
-        <div class="max-w-3xl w-full bg-blue-800 p-8 border-4 border-white rounded-xl shadow-2xl">
-            <h2 class="text-xl mb-6 opacity-60 uppercase tracking-widest">
-                {{ gameData.categories[activeTile.cIdx].name }} - {{ (activeTile.rIdx + 1) * 100 }} Punkte
-            </h2>
-
-            <div v-if="!isEditing">
-                <p class="text-5xl font-bold mb-12">{{ showAnswer ? activeTile.data.a : activeTile.data.q }}</p>
-                <div class="flex gap-4 justify-center">
-                    <button @click="showAnswer = true" v-if="!showAnswer" class="bg-white text-blue-900 px-8 py-3 rounded-full font-bold uppercase">Lösung zeigen</button>
-                    <button @click="closeTile(true)" v-if="showAnswer" class="bg-yellow-500 text-black px-8 py-3 rounded-full font-bold uppercase">Abhaken</button>
-                    <button @click="closeTile(false)" class="border border-white px-8 py-3 rounded-full font-bold uppercase">Abbrechen</button>
+    <div v-if="activeTile" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
+        <div class="bg-blue-900 border-4 border-white w-full max-w-4xl p-8 rounded-lg relative">
+            
+            <div v-if="isEditing" class="grid grid-cols-2 gap-6">
+                <div>
+                    <label class="text-yellow-400 font-bold">FRAGE (Text oder URL)</label>
+                    <textarea v-model="activeTile.data.q" class="w-full bg-black p-2 mt-2 h-32 rounded border border-gray-500"></textarea>
+                    <label class="text-yellow-400 font-bold mt-4 block">ANTWORT</label>
+                    <textarea v-model="activeTile.data.a" class="w-full bg-black p-2 mt-2 h-32 rounded border border-gray-500"></textarea>
                 </div>
+                <div>
+                    <label class="text-yellow-400 font-bold">MEDIEN-TYP</label>
+                    <select v-model="activeTile.data.type" class="w-full bg-black p-2 mt-2 border border-gray-500">
+                        <option value="text">Nur Text</option>
+                        <option value="image">Bild / GIF (URL)</option>
+                        <option value="video">Video (MP4 URL)</option>
+                        <option value="audio">Audio (MP3 URL)</option>
+                    </select>
+                    <p class="text-xs mt-4 text-gray-300 italic">Hinweis: Kopiere Bild-URLs oder Dateipfade hierhin. Bei "Text" wird einfach der Text angezeigt.</p>
+                </div>
+                <button @click="activeTile = null" class="col-span-2 bg-green-600 py-3 font-bold uppercase">Speichern</button>
             </div>
 
-            <div v-else>
-                <label class="block text-left mb-2 text-yellow-400 font-bold uppercase">Frage:</label>
-                <textarea v-model="activeTile.data.q" class="w-full bg-black text-white p-4 mb-6 rounded border border-white text-xl" rows="3"></textarea>
+            <div v-else class="text-center">
+                <h2 class="text-xl opacity-50 mb-4">{{ activeTile.catName }} - {{ (activeTile.rIdx + 1) * 100 }}</h2>
                 
-                <label class="block text-left mb-2 text-yellow-400 font-bold uppercase">Antwort:</label>
-                <textarea v-model="activeTile.data.a" class="w-full bg-black text-white p-4 mb-6 rounded border border-white text-xl" rows="3"></textarea>
-                
-                <button @click="closeTile(false)" class="w-full bg-green-500 text-black py-3 rounded font-bold uppercase">Speichern & Schließen</button>
+                <div class="media-container mb-8 min-h-[200px] flex items-center justify-center">
+                    <div v-if="!showAnswer">
+                        <template v-if="activeTile.data.type === 'image'"><img :src="activeTile.data.q" class="rounded shadow-lg"></template>
+                        <template v-else-if="activeTile.data.type === 'video'"><video :src="activeTile.data.q" controls autoplay class="w-full"></video></template>
+                        <template v-else-if="activeTile.data.type === 'audio'"><audio :src="activeTile.data.q" controls autoplay></audio></template>
+                        <p v-else class="text-5xl font-bold">{{ activeTile.data.q }}</p>
+                    </div>
+                    <p v-else class="text-6xl font-bold text-yellow-400">{{ activeTile.data.a }}</p>
+                </div>
+
+                <div class="flex gap-4 justify-center">
+                    <button @click="showAnswer = true" v-if="!showAnswer" class="bg-white text-blue-900 px-10 py-4 rounded-full font-bold text-2xl uppercase shadow-lg">Lösung</button>
+                    <button @click="closeTile(true)" v-else class="bg-yellow-500 text-black px-10 py-4 rounded-full font-bold text-2xl uppercase shadow-lg">Richtig / Weiter</button>
+                    <button @click="activeTile = null" class="border border-white/50 px-6 py-4 rounded-full font-bold uppercase">Abbrechen</button>
+                </div>
             </div>
         </div>
     </div>
@@ -86,44 +97,29 @@
 
 <script>
 const { createApp } = Vue
-
 createApp({
     data() {
         return {
-            isEditing: false,
-            showAnswer: false,
-            activeTile: null,
-            gameData: {
-                title: "MEIN JEOPARDY",
-                categories: Array.from({length: 5}, (_, i) => ({
-                    name: "Kategorie " + (i+1),
-                    questions: Array.from({length: 5}, () => ({ q: "", a: "", done: false }))
-                }))
-            }
+            isEditing: false, showAnswer: false, activeTile: null,
+            gameData: { title: "NEUES SPIEL", categories: Array.from({length: 5}, (_, i) => ({ name: "KAT " + (i+1), questions: Array.from({length: 5}, () => ({ q: "Frage hier", a: "Antwort hier", type: "text", done: false })) })) }
         }
     },
     methods: {
         handleTileClick(cIdx, rIdx) {
-            this.activeTile = {
-                cIdx, rIdx,
-                data: this.gameData.categories[cIdx].questions[rIdx]
-            };
+            this.activeTile = { cIdx, rIdx, catName: this.gameData.categories[cIdx].name, data: this.gameData.categories[cIdx].questions[rIdx] };
             this.showAnswer = false;
         },
-        closeTile(markAsDone) {
-            if (markAsDone) this.activeTile.data.done = true;
-            this.activeTile = null;
+        closeTile(done) { if(done) this.activeTile.data.done = true; this.activeTile = null; },
+        triggerUpload() { document.getElementById('fileInput').click(); },
+        loadJSON(e) {
+            const reader = new FileReader();
+            reader.onload = (event) => { this.gameData = JSON.parse(event.target.result); };
+            reader.readAsText(e.target.files[0]);
         },
-        updateTitle(e) { this.gameData.title = e.target.innerText; },
-        updateCatName(idx, e) { this.gameData.categories[idx].name = e.target.innerText; },
         downloadJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.gameData, null, 2));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "game.json");
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
+            const blob = new Blob([JSON.stringify(this.gameData, null, 2)], {type : 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = 'game.json'; a.click();
         }
     }
 }).mount('#app')
