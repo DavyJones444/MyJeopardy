@@ -85,8 +85,12 @@
     <div class="flex-grow px-8 pb-48 pt-8 overflow-hidden flex flex-col items-center">
         <div class="grid grid-cols-5 gap-4 w-full max-w-[1600px] h-full">
             <div v-for="(cat, cIdx) in gameData.categories" :key="'h-'+cIdx" 
-                 class="dynamic-bg-primary border-4 border-white flex items-center justify-center text-center p-3 shadow-xl">
-                <span class="font-black text-lg lg:text-2xl uppercase">{{ cat.name }}</span>
+                class="dynamic-bg-primary border-4 border-white flex items-center justify-center text-center p-3 shadow-xl">
+                <span class="font-black text-lg lg:text-2xl uppercase leading-tight outline-none"
+                    :contenteditable="isEditing" 
+                    @blur="cat.name = $event.target.innerText">
+                    {{ cat.name }}
+                </span>
             </div>
 
             <template v-for="rIdx in [0,1,2,3,4]">
