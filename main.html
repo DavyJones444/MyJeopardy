@@ -217,11 +217,20 @@
                 </div>
 
                 <div class="dynamic-bg-primary border-t-4 border-x-4 border-white shadow-[0_0_50px_rgba(0,0,0,0.5)] flex flex-col justify-end pb-6 px-8 rounded-t-2xl transition-all"
-                    :style="{ height: (300 - (idx * 60)) + 'px', width: '220px' }">
+                    :style="{ 
+                        height: (300 - (team.rank * 60)) + 'px', 
+                        width: '220px',
+                        order: getPodiumOrder(idx) 
+                    }">
+                    
+                    <div v-if="team.rank === 0" class="absolute -top-12 left-0 right-0 text-center text-5xl animate-bounce">
+                        👑
+                    </div>
+
                     <div class="text-4xl font-black dynamic-text-secondary text-center">
                         {{ team.score }}
                     </div>
-                    <div class="text-center text-white/40 font-bold uppercase text-xs mt-2">Punkte</div>
+                    <div class="text-center text-white/40 font-bold uppercase text-[10px] mt-2">Punkte</div>
                 </div>
             </div>
         </div>
@@ -256,13 +265,23 @@ createApp({
         },
         // Sortiert die Teams nach Score für das Treppchen
         sortedTeams() {
-            return [...this.gameData.teams].sort((a, b) => b.score - a.score);
+            // 1. Teams nach Score sortieren
+            const sorted = [...this.gameData.teams].sort((a, b) => b.score - a.score);
+            
+            // 2. Den Rang berechnen (Teams mit gleichem Score bekommen gleichen Rang)
+            let currentRank = 0;
+            return sorted.map((team, index) => {
+                if (index > 0 && team.score < sorted[index - 1].score) {
+                    currentRank++;
+                }
+                return { ...team, rank: currentRank };
+            });
         }
     },
     methods: {
         // Hilfsfunktion: Platziert den 1. in die Mitte (2-1-3 Layout)
         getPodiumOrder(index) {
-            const mapping = [2, 1, 3, 4, 5, 6]; 
+            const mapping = [2, 1, 3, 4, 5, 6, 7, 8]; 
             return mapping[index] || index;
         },
         getCalculatedValue() {
