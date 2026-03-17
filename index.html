@@ -260,17 +260,52 @@
 const { createApp } = Vue
 createApp({
     data() {
+        // Standard-Daten (dein bisheriges Setup)
+        const defaultData = {
+            title: "MYJEOPARDY",
+            theme: { primary: '#060ce9', secondary: '#ffcc00' },
+            teams: [{ name: "TEAM 1", score: 0 }, { name: "TEAM 2", score: 0 }],
+            categories: Array.from({length: 5}, (_, i) => ({ 
+                name: "KATEGORIE " + (i+1), 
+                questions: Array.from({length: 5}, () => ({ 
+                    q: "Frage...", a: "Antwort...", mode: 'normal', done: false 
+                })) 
+            }))
+        };
+
+        // Versuch, Daten aus dem LocalStorage zu laden
+        const savedData = localStorage.getItem('myJeopardyData');
+        
         return {
-            isEditing: false, showAnswer: false, activeTile: null,
-            gameData: { 
-                title: "MYJEOPARDY", 
-                theme: { primary: '#060ce9', secondary: '#ffcc00' },
-                teams: [{ name: "TEAM 1", score: 0 }, { name: "TEAM 2", score: 0 }], 
-                categories: Array.from({length: 5}, (_, i) => ({ name: "KATEGORIE " + (i+1), questions: Array.from({length: 5}, () => ({ q: "Frage...", a: "Antwort...", mode: 'normal', done: false })) })) 
-            }
+            isEditing: false,
+            showAnswer: false,
+            activeTile: null,
+            // Wenn gespeicherte Daten existieren, parsen wir sie, sonst Default
+            gameData: savedData ? JSON.parse(savedData) : defaultData
         }
     },
-    computed: {
+    watch: {
+        gameData: {
+            handler(newData) {
+                // 1. CSS Variablen für das Color Wheel aktualisieren
+                document.documentElement.style.setProperty('--primary', newData.theme.primary);
+                document.documentElement.style.setProperty('--secondary', newData.theme.secondary);
+
+                // 2. Das gesamte Spiel im LocalStorage speichern
+                localStorage.setItem('myJeopardyData', JSON.stringify(newData));
+                console.log("Spielstand automatisch gespeichert.");
+            },
+            deep: true,
+            immediate: true
+        }   
+    },
+    mounted() {
+          if (this.gameData.theme) {
+              document.documentElement.style.setProperty('--primary', this.gameData.theme.primary);
+              document.documentElement.style.setProperty('--secondary', this.gameData.theme.secondary);
+          }
+      },
+  	computed: {
         rootStyles() { return { '--primary': this.gameData.theme.primary, '--secondary': this.gameData.theme.secondary } },
         // Prüft, ob alle Fragen auf 'done' stehen
         gameFinished() {
@@ -368,17 +403,6 @@ createApp({
             const a = document.createElement('a'); a.href = url; a.download = 'game.json'; a.click();
         }
     },
-    watch: {
-        'gameData.theme': {
-            handler(newTheme) {
-                // Schreibt die Farben direkt in das :root von CSS
-                document.documentElement.style.setProperty('--primary', newTheme.primary);
-                document.documentElement.style.setProperty('--secondary', newTheme.secondary);
-            },
-            deep: true,
-            immediate: true
-        }   
-    }
 }).mount('#app')
 </script>
 </body>
