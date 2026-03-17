@@ -52,6 +52,48 @@
             border: 10px solid var(--secondary) !important;
         }
 
+        /* Der Hintergrund (das schwarze Overlay) fadet sanft ein */
+        .modal-enter-active, .modal-leave-active {
+            transition: opacity 0.4s ease;
+        }
+
+        /* Das eigentliche Fragen-Fenster (Content) */
+        .modal-enter-active .modal-content {
+            animation: expand-in 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        .modal-leave-active .modal-content {
+            animation: expand-in 0.2s reverse ease-in;
+        }
+
+        @keyframes expand-in {
+            0% {
+                transform: scale(0.3); /* Startet klein, als käme es aus der Kachel */
+                opacity: 0;
+                filter: blur(10px);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+                filter: blur(0);
+            }
+        }
+
+        /* Das Grid im Hintergrund soll leicht zurückweichen, wenn ein Modal offen ist */
+        #app > div:nth-child(2) {
+            transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1), filter 0.5s;
+        }
+
+        .modal-open-blur {
+            transform: scale(0.95);
+            filter: blur(4px);
+        }
+        /* In deinen <style> Block */
+        .dynamic-bg-primary:active {
+            transform: scale(0.95);
+            transition: transform 0.1s;
+        }
+
         .media-content img { max-height: 350px; border: 4px solid white; border-radius: 12px; margin: 0 auto; }
     </style>
 </head>
@@ -145,73 +187,75 @@
         </div>
         <button @click="addTeam" class="pointer-events-auto mb-6 w-12 h-12 bg-white/10 border-2 border-dashed border-white/30 rounded-full flex items-center justify-center text-white/50 hover:text-white">+</button>
     </div>
-
-    <div v-if="activeTile" class="fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-6 backdrop-blur-md">
-        <div class="dynamic-bg-primary border-[10px] border-white w-full max-w-6xl p-12 rounded-[3rem] relative shadow-2xl text-center transition-all"
-             :class="{'joker-glow': !isEditing && activeTile.data.mode === 'joker'}">
-            
-            <div v-if="isEditing">
-                <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
-                    <h3 class="dynamic-text-secondary font-black uppercase text-3xl italic">Editor</h3>
-                    <div class="flex gap-2">
-                        <button v-for="m in ['normal', 'double', 'triple', 'joker']" @click="activeTile.data.mode = m"
-                                class="px-4 py-2 rounded-xl border-2 text-xs font-black uppercase transition-all"
-                                :class="activeTile.data.mode === m ? 'dynamic-bg-secondary text-black' : 'border-white/20 text-white/50'">
-                            {{ m }}
-                        </button>
-                    </div>
-                </div>
-
-                <div v-if="activeTile.data.mode !== 'joker'" class="grid md:grid-cols-2 gap-10">
-                    <textarea v-model="activeTile.data.q" placeholder="Frage..." class="w-full bg-black/40 p-6 h-64 rounded-2xl border-2 border-white/20 text-2xl outline-none"></textarea>
-                    <textarea v-model="activeTile.data.a" placeholder="Antwort..." class="w-full bg-black/40 p-6 h-64 rounded-2xl border-2 border-white/20 text-2xl outline-none"></textarea>
-                </div>
-                <div v-else class="h-64 flex flex-col items-center justify-center bg-black/40 rounded-2xl border-2 border-dashed border-secondary/30">
-                    <div class="text-5xl mb-4">🎁</div>
-                    <div class="text-secondary font-black text-2xl uppercase tracking-widest">Joker-Feld aktiviert</div>
-                    <p class="text-white/50 mt-2">Keine Frage nötig. Das gewählte Team erhält die Punkte sofort.</p>
-                </div>
-
-                <button @click="activeTile = null" class="w-full bg-white text-black mt-10 py-5 font-black uppercase text-2xl rounded-2xl shadow-xl">Speichern</button>
-            </div>
-
-            <div v-else>
-                <div v-if="activeTile.data.mode === 'joker'" class="animate-joker">
-                    <div class="text-8xl mb-8">🃏</div>
-                    <h2 class="text-6xl font-black dynamic-text-secondary uppercase mb-4 tracking-tighter">Joker gefunden!</h2>
-                    <p class="text-2xl uppercase font-bold text-white mb-12 italic tracking-widest">
-                        Gratis {{ getCalculatedValue() }} Punkte für ein Team deiner Wahl!
-                    </p>
-                </div>
+    
+    <transistion name="modal">
+        <div v-if="activeTile" class="fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-6 backdrop-blur-md">
+            <div class="modal-content dynamic-bg-primary border-[10px] border-white w-full max-w-6xl p-12 rounded-[3rem] relative shadow-2xl text-center transition-all"
+                :class="{'joker-glow': !isEditing && activeTile.data.mode === 'joker'}">
                 
-                <template v-else>
-                    <div class="uppercase text-white/40 mb-10 text-2xl font-black tracking-widest">
-                        {{ activeTile.catName }} | {{ getCalculatedValue() }} Punkte
-                        <span v-if="activeTile.data.mode !== 'normal'" class="dynamic-text-secondary ml-4">[{{ activeTile.data.mode.toUpperCase() }}]</span>
-                    </div>
-                    <div class="media-content mb-16 min-h-[350px] flex items-center justify-center text-4xl lg:text-7xl font-black leading-tight">
-                        <div v-html="parseContent(showAnswer ? activeTile.data.a : activeTile.data.q)"></div>
-                    </div>
-                </template>
-
-                <div class="flex flex-col gap-8 items-center">
-                    <button @click="showAnswer = true" v-if="!showAnswer && activeTile.data.mode !== 'joker'" 
-                            class="bg-white text-black px-20 py-8 rounded-full font-black text-4xl uppercase shadow-2xl">Lösung zeigen</button>
-                    
-                    <div v-if="showAnswer || activeTile.data.mode === 'joker'" class="w-full">
-                        <p class="dynamic-text-secondary uppercase font-black text-xl mb-8 tracking-widest italic border-b border-white/10 pb-4">Punkte vergeben an:</p>
-                        <div class="flex flex-wrap gap-6 justify-center">
-                            <button v-for="(team, tIdx) in gameData.teams" @click="assignPoints(tIdx)" 
-                                    class="bg-black/50 hover:bg-white hover:text-black border-4 border-white px-10 py-5 rounded-2xl font-black uppercase text-2xl transition-all">
-                                {{ team.name }} (+{{ getCalculatedValue() }})
+                <div v-if="isEditing">
+                    <div class="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+                        <h3 class="dynamic-text-secondary font-black uppercase text-3xl italic">Editor</h3>
+                        <div class="flex gap-2">
+                            <button v-for="m in ['normal', 'double', 'triple', 'joker']" @click="activeTile.data.mode = m"
+                                    class="px-4 py-2 rounded-xl border-2 text-xs font-black uppercase transition-all"
+                                    :class="activeTile.data.mode === m ? 'dynamic-bg-secondary text-black' : 'border-white/20 text-white/50'">
+                                {{ m }}
                             </button>
-                            <button @click="closeTile(true)" class="bg-white/10 px-10 py-5 rounded-2xl font-black uppercase text-2xl hover:bg-white/20">Niemand</button>
+                        </div>
+                    </div>
+
+                    <div v-if="activeTile.data.mode !== 'joker'" class="grid md:grid-cols-2 gap-10">
+                        <textarea v-model="activeTile.data.q" placeholder="Frage..." class="w-full bg-black/40 p-6 h-64 rounded-2xl border-2 border-white/20 text-2xl outline-none"></textarea>
+                        <textarea v-model="activeTile.data.a" placeholder="Antwort..." class="w-full bg-black/40 p-6 h-64 rounded-2xl border-2 border-white/20 text-2xl outline-none"></textarea>
+                    </div>
+                    <div v-else class="h-64 flex flex-col items-center justify-center bg-black/40 rounded-2xl border-2 border-dashed border-secondary/30">
+                        <div class="text-5xl mb-4">🎁</div>
+                        <div class="text-secondary font-black text-2xl uppercase tracking-widest">Joker-Feld aktiviert</div>
+                        <p class="text-white/50 mt-2">Keine Frage nötig. Das gewählte Team erhält die Punkte sofort.</p>
+                    </div>
+
+                    <button @click="activeTile = null" class="w-full bg-white text-black mt-10 py-5 font-black uppercase text-2xl rounded-2xl shadow-xl">Speichern</button>
+                </div>
+
+                <div v-else>
+                    <div v-if="activeTile.data.mode === 'joker'" class="animate-joker">
+                        <div class="text-8xl mb-8">🃏</div>
+                        <h2 class="text-6xl font-black dynamic-text-secondary uppercase mb-4 tracking-tighter">Joker gefunden!</h2>
+                        <p class="text-2xl uppercase font-bold text-white mb-12 italic tracking-widest">
+                            Gratis {{ getCalculatedValue() }} Punkte für ein Team deiner Wahl!
+                        </p>
+                    </div>
+                    
+                    <template v-else>
+                        <div class="uppercase text-white/40 mb-10 text-2xl font-black tracking-widest">
+                            {{ activeTile.catName }} | {{ getCalculatedValue() }} Punkte
+                            <span v-if="activeTile.data.mode !== 'normal'" class="dynamic-text-secondary ml-4">[{{ activeTile.data.mode.toUpperCase() }}]</span>
+                        </div>
+                        <div class="media-content mb-16 min-h-[350px] flex items-center justify-center text-4xl lg:text-7xl font-black leading-tight">
+                            <div v-html="parseContent(showAnswer ? activeTile.data.a : activeTile.data.q)"></div>
+                        </div>
+                    </template>
+
+                    <div class="flex flex-col gap-8 items-center">
+                        <button @click="showAnswer = true" v-if="!showAnswer && activeTile.data.mode !== 'joker'" 
+                                class="bg-white text-black px-20 py-8 rounded-full font-black text-4xl uppercase shadow-2xl">Lösung zeigen</button>
+                        
+                        <div v-if="showAnswer || activeTile.data.mode === 'joker'" class="w-full">
+                            <p class="dynamic-text-secondary uppercase font-black text-xl mb-8 tracking-widest italic border-b border-white/10 pb-4">Punkte vergeben an:</p>
+                            <div class="flex flex-wrap gap-6 justify-center">
+                                <button v-for="(team, tIdx) in gameData.teams" @click="assignPoints(tIdx)" 
+                                        class="bg-black/50 hover:bg-white hover:text-black border-4 border-white px-10 py-5 rounded-2xl font-black uppercase text-2xl transition-all">
+                                    {{ team.name }} (+{{ getCalculatedValue() }})
+                                </button>
+                                <button @click="closeTile(true)" class="bg-white/10 px-10 py-5 rounded-2xl font-black uppercase text-2xl hover:bg-white/20">Niemand</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </transistion>
     <div v-if="gameFinished" class="fixed inset-0 bg-black/98 z-[200] flex flex-col items-center justify-center p-10 backdrop-blur-2xl animate-joker">
         <div class="text-center mb-12">
             <h2 class="text-7xl font-black dynamic-text-secondary uppercase italic tracking-tighter mb-2">Finale Ergebnisse</h2>
