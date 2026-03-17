@@ -7,7 +7,7 @@
 <a name="english"></a>
 ## 🇬🇧 English
 
-**Custom Studio Jeopardy** is a modern, web-based quiz application inspired by the classic TV show. It allows you to create, edit, and play your own Jeopardy boards directly in your browser with full multimedia support.
+**MyJeopardy** is a modern, web-based quiz application inspired by the classic TV show. It allows you to create, edit, and play your own Jeopardy boards directly in your browser with full multimedia support.
 
 ### ✨ Key Features
 * **Fully Customizable:** Create your own categories and questions directly in the browser.
@@ -34,7 +34,7 @@ You can play the latest version here:
 <a name="deutsch"></a>
 ## 🇩🇪 Deutsch
 
-**Custom Studio Jeopardy** ist eine moderne, webbasierte Quiz-Applikation, inspiriert durch die klassische TV-Show. Erstelle, editiere und spiele deine eigenen Jeopardy-Boards direkt im Browser mit voller Multimedia-Unterstützung.
+**MyJeopardy** ist eine moderne, webbasierte Quiz-Applikation, inspiriert durch die klassische TV-Show. Erstelle, editiere und spiele deine eigenen Jeopardy-Boards direkt im Browser mit voller Multimedia-Unterstützung.
 
 ### ✨ Hauptmerkmale
 * **Vollständig anpassbar:** Erstelle eigene Kategorien und Fragen direkt im Browser-Editor.
@@ -54,7 +54,7 @@ Diese Anwendung läuft vollständig im Arbeitsspeicher deines Browsers.
 
 ### 🚀 Live Demo
 Hier kannst du die aktuelle Version direkt ausprobieren:  
-👉 **[games.luda-vision.de/My-Jeopardy](https://games.luda-vision.de/My-Jeopardy)**
+👉 **[games.luda-vision.de/MyJeopardy](https://games.luda-vision.de/My-Jeopardy)**
 
 ---
 
