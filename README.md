@@ -18,7 +18,7 @@
 * **Special Game Modes:** * **Double Trouble (x2)** & **Triple Time (x3)** for high stakes.
     * **Joker Fields:** Surprise bonus points without a question!
 * **Interactive Scoreboard:** Fixed "Podiums" for teams with real-time score tracking.
-* **Dynamic Theming:** Change the primary and secondary colors live to match your event's branding.
+* **WIP Dynamic Theming:** Change the primary and secondary colors live to match your event's branding.
 * **Winner's Podium:** An automatic end-screen with a 3D-style trophy ceremony for the winning teams.
 
 ### ⚠️ Important: Save Your Progress!
@@ -45,7 +45,7 @@ You can play the latest version here:
 * **Spezial-Modi:** * **Double Trouble (x2)** & **Triple Time (x3)** für riskante Runden.
     * **Joker-Felder:** Überraschende Bonuspunkte ohne Frage!
 * **Interaktives Scoreboard:** Feststehende "Podeste" für Teams mit Echtzeit-Punktestand.
-* **Live-Theming:** Ändere Primär- und Sekundärfarben live passend zu deinem Event.
+* **WIP Live-Theming:** Ändere Primär- und Sekundärfarben live passend zu deinem Event.
 * **Siegerehrung:** Automatischer Endscreen mit Tribüne für die Gewinner-Teams.
 
 ### ⚠️ Wichtig: Fortschritt Speichern!
