@@ -1,4 +1,4 @@
-# 📺 Custom Studio Jeopardy
+# 📺 MyJeopardy - A Custom Jeopardy Board Creator
 
 [English Version](#english) | [Deutsche Version](#deutsch)
 
