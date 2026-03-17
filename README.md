@@ -22,8 +22,8 @@
 * **Winner's Podium:** An automatic end-screen with a 3D-style trophy ceremony for the winning teams.
 
 ### ⚠️ Important: Save Your Progress!
-This application runs entirely in your browser's memory. 
-> **CRITICAL:** Always use the **Export** button to save your game as a `.json` file. If you refresh the page or close the tab without exporting, **your data will be lost!** Use the **Import** button to resume your game later.
+This application is using LocalStorage, this means if you accidentally refresh the app, your data should've been saved on your device. But not permanently! 
+> **CRITICAL:** Always use the **Export** button to save your game as a `.json` file. If you refresh the page or close the tab without exporting, **your data could be lost!** Use the **Import** button to resume your game later.
 
 ### 🚀 Live Demo
 You can play the latest version here:  
@@ -49,8 +49,8 @@ You can play the latest version here:
 * **Siegerehrung:** Automatischer Endscreen mit Tribüne für die Gewinner-Teams.
 
 ### ⚠️ Wichtig: Fortschritt Speichern!
-Diese Anwendung läuft vollständig im Arbeitsspeicher deines Browsers.
-> **ACHTUNG:** Nutze immer den **Export**-Button, um dein Spiel als `.json` Datei zu speichern. Wenn du die Seite neu lädst oder den Tab schließt, ohne zu exportieren, **gehen alle Daten verloren!** Nutze den **Import**-Button, um ein Spiel fortzusetzen.
+Diese Anwendung läuft vollständig Speicher deines Browsers. Deine Daten sollten gespeichert sein, wenn du die Seite neu lädst, jedoch nicht permanent!
+> **ACHTUNG:** Nutze immer den **Export**-Button, um dein Spiel als `.json` Datei zu speichern. Wenn du die Seite neu lädst oder den Tab schließt, ohne zu exportieren, **können alle Daten verloren gehen!** Nutze den **Import**-Button, um ein Spiel fortzusetzen.
 
 ### 🚀 Live Demo
 Hier kannst du die aktuelle Version direkt ausprobieren:  
