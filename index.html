@@ -9,11 +9,27 @@
         :root { --primary: #060ce9; --secondary: #ffcc00; }
         body { overflow: hidden; height: 100vh; width: 100vw; background-color: black; color: white; font-family: sans-serif; }
         
+        /* Ändere diese Klassen in deinem <style> Bereich */
         .studio-background {
+            /* Nutze die Variablen hier direkt */
             background: linear-gradient(0deg, var(--primary) -60%, rgba(0,0,0,1) 80%);
-            height: 100vh; transition: background 0.3s ease;
+            height: 100vh; 
+            transition: background 0.3s ease;
         }
 
+        .podium {
+            pointer-events: auto; 
+            background-color: var(--primary); /* Nutzt die Live-Variable */
+            filter: brightness(1.1); 
+            border: 3px solid white; 
+            border-bottom: none; 
+            border-radius: 15px 15px 0 0; 
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.8); 
+            width: 260px; 
+            transition: all 0.3s ease;
+        }
+
+        /* WICHTIG: Die Hilfsklassen müssen die Variablen erzwingen */
         .dynamic-bg-primary { background-color: var(--primary) !important; }
         .dynamic-text-secondary { color: var(--secondary) !important; }
         .dynamic-bg-secondary { background-color: var(--secondary) !important; }
@@ -21,13 +37,6 @@
         .team-footer {
             position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
             display: flex; justify-content: center; align-items: flex-end; gap: 1.5rem; pointer-events: none;
-        }
-
-        .podium {
-            pointer-events: auto; background-color: var(--primary);
-            filter: brightness(1.1); border: 3px solid white; border-bottom: none; 
-            border-radius: 15px 15px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.8); 
-            width: 260px; transition: all 0.3s ease;
         }
         
         /* Joker Animation */
@@ -59,11 +68,17 @@
             
             <div v-if="isEditing" class="flex gap-6 border-l border-white/20 pl-6">
                 <div class="flex flex-col items-center">
-                    <input type="color" v-model="gameData.theme.primary" class="w-8 h-8 rounded-full cursor-pointer bg-transparent border-2 border-white/20">
+                    <input type="color" 
+                        v-model="gameData.theme.primary" 
+                        @input="gameData.theme.primary = $event.target.value"
+                        class="w-8 h-8 rounded-full cursor-pointer bg-transparent border-2 border-white/20">
                     <span class="text-[9px] uppercase font-bold text-gray-500 mt-1">Board</span>
                 </div>
                 <div class="flex flex-col items-center">
-                    <input type="color" v-model="gameData.theme.secondary" class="w-8 h-8 rounded-full cursor-pointer bg-transparent border-2 border-white/20">
+                    <input type="color" 
+                        v-model="gameData.theme.secondary" 
+                        @input="gameData.theme.secondary = $event.target.value"
+                        class="w-8 h-8 rounded-full cursor-pointer bg-transparent border-2 border-white/20">
                     <span class="text-[9px] uppercase font-bold text-gray-500 mt-1">Akzent</span>
                 </div>
             </div>
@@ -352,6 +367,17 @@ createApp({
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = 'game.json'; a.click();
         }
+    },
+    watch: {
+        'gameData.theme': {
+            handler(newTheme) {
+                // Schreibt die Farben direkt in das :root von CSS
+                document.documentElement.style.setProperty('--primary', newTheme.primary);
+                document.documentElement.style.setProperty('--secondary', newTheme.secondary);
+            },
+            deep: true,
+            immediate: true
+        }   
     }
 }).mount('#app')
 </script>
