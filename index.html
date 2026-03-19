@@ -344,10 +344,17 @@ createApp({
         }   
     },
     mounted() {
-          if (this.gameData.theme) {
-              document.documentElement.style.setProperty('--primary', this.gameData.theme.primary);
-              document.documentElement.style.setProperty('--secondary', this.gameData.theme.secondary);
-          }
+        if (this.gameData.theme) {
+            document.documentElement.style.setProperty('--primary', this.gameData.theme.primary);
+            document.documentElement.style.setProperty('--secondary', this.gameData.theme.secondary);
+        }
+        // Drag & Drop Listener
+        window.addEventListener('dragover', (e) => e.preventDefault());
+        window.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file) this.processFile(file);
+        });
       },
   	computed: {
         rootStyles() { return { '--primary': this.gameData.theme.primary, '--secondary': this.gameData.theme.secondary } },
@@ -433,18 +440,43 @@ createApp({
         removeTeam(idx) { if(confirm("Löschen?")) this.gameData.teams.splice(idx, 1); },
         resetGame() { if(confirm("Reset?")) { this.gameData.teams.forEach(t => t.score = 0); this.gameData.categories.forEach(c => c.questions.forEach(q => q.done = false)); } },
         triggerUpload() { document.getElementById('fileInput').click(); },
-        loadJSON(e) {
+        // Hilfsfunktion für Upload & Drag-and-Drop
+        processFile(file) {
             const reader = new FileReader();
             reader.onload = (event) => { 
-                this.gameData = JSON.parse(event.target.result); 
-                this.gameData.categories.forEach(c => c.questions.forEach(q => { if(!q.mode) q.mode = 'normal'; }));
+                try {
+                    const importedData = JSON.parse(event.target.result);
+                    // Validierung: Hat das JSON die richtige Struktur?
+                    if (!importedData.categories) throw new Error("Kein Jeopardy Format");
+                    
+                    this.gameData = importedData; 
+                    this.gameData.categories.forEach(c => c.questions.forEach(q => { 
+                        if(!q.mode) q.mode = 'normal'; 
+                    }));
+                } catch (e) {
+                    alert("Fehler: Das ist keine gültige Jeopardy-Datei!");
+                }
             };
-            reader.readAsText(e.target.files[0]);
+            reader.readAsText(file);
+        },
+        loadJSON(e) {
+            if (e.target.files[0]) this.processFile(e.target.files[0]);
         },
         downloadJSON() {
-            const blob = new Blob([JSON.stringify(this.gameData, null, 2)], {type : 'application/json'});
+            const dataStr = JSON.stringify(this.gameData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = 'game.json'; a.click();
+            const a = document.createElement('a');
+            
+            a.href = url;
+            // Hier setzen wir die neue Endung .jpdy
+            const fileName = this.gameData.title.replace(/[^a-z0-0]/gi, '_').toLowerCase();
+            a.download = `${fileName}.jpdy`; 
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     },
 }).mount('#app')
