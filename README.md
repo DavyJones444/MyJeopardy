@@ -1,12 +1,7 @@
 # 📺 MyJeopardy - A Custom Jeopardy Board Creator
 
-[English Version](#english) | [Deutsche Version](#deutsch)
-
------
-
-<a name="english"\>\</a\>
-
-## 🇬🇧 English
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/DavyJones444/MyJeopardy/blob/master/README.md)
+[![de](https://img.shields.io/badge/lang-de-green.svg)](https://github.com/DavyJones444/MyJeopardy/blob/master/README.de.md)
 
 **MyJeopardy** is a modern, web-based quiz application inspired by the classic TV show. It allows you to create, edit, and play your own Jeopardy boards directly in your browser with full multimedia support.
 
