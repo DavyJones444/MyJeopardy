@@ -1,16 +1,7 @@
-Hier ist die aktualisierte README.md. Ich habe die neuen Funktionen so integriert, dass sie sowohl den technischen Fortschritt als auch die verbesserte Benutzerfreundlichkeit hervorheben.
-
------
-
 # 📺 MyJeopardy - A Custom Jeopardy Board Creator
 
-[English Version](https://www.google.com/search?q=%23english) | [Deutsche Version](https://www.google.com/search?q=%23deutsch)
-
------
-
-\<a name="english"\>\</a\>
-
-## 🇬🇧 English
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/DavyJones444/MyJeopardy/blob/master/README.md)
+[![de](https://img.shields.io/badge/lang-de-green.svg)](https://github.com/DavyJones444/MyJeopardy/blob/master/README.de.md)
 
 **MyJeopardy** is a modern, web-based quiz application inspired by the classic TV show. It allows you to create, edit, and play your own Jeopardy boards directly in your browser with full multimedia support.
 
@@ -43,7 +34,7 @@ Hier ist die aktualisierte README.md. Ich habe die neuen Funktionen so integrier
 
 -----
 
-\<a name="deutsch"\>\</a\>
+<a name="deutsch"\>\</a\>
 
 ## 🇩🇪 Deutsch
 
