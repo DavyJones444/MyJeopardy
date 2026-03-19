@@ -1,4 +1,4 @@
-# 📺 MyJeopardy - A Custom Jeopardy Board Creator
+# 📺 MyJeopardy - Ein Jeopardy Board Creator
 
 [![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/DavyJones444/MyJeopardy/blob/main/README.md)
 [![de](https://img.shields.io/badge/lang-de-green.svg)](https://github.com/DavyJones444/MyJeopardy/blob/main/README.de.md)
