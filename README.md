@@ -1,14 +1,10 @@
-Hier ist die aktualisierte README.md. Ich habe die neuen Funktionen so integriert, dass sie sowohl den technischen Fortschritt als auch die verbesserte Benutzerfreundlichkeit hervorheben.
-
------
-
 # 📺 MyJeopardy - A Custom Jeopardy Board Creator
 
-[English Version](https://www.google.com/search?q=%23english) | [Deutsche Version](https://www.google.com/search?q=%23deutsch)
+[English Version](#english) | [Deutsche Version](#deutsch)
 
 -----
 
-\<a name="english"\>\</a\>
+<a name="english"\>\</a\>
 
 ## 🇬🇧 English
 
@@ -43,7 +39,7 @@ Hier ist die aktualisierte README.md. Ich habe die neuen Funktionen so integrier
 
 -----
 
-\<a name="deutsch"\>\</a\>
+<a name="deutsch"\>\</a\>
 
 ## 🇩🇪 Deutsch
 
