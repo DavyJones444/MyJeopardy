@@ -56,6 +56,25 @@ createApp({
       },
   	computed: {
         rootStyles() { return { '--primary': this.gameData.theme.primary, '--secondary': this.gameData.theme.secondary } },
+        
+        getModalBorderClass() {
+            if (!this.activeTile) return {}; // Falls kein Modal offen ist
+            
+            const mode = this.activeTile.data.mode;
+            
+            // Im Edit-Modus lassen wir den Rahmen standardmäßig weiß/primär
+            if (this.isEditing) return { 'border-[10px] border-white': true };
+
+            // Logik für den Spiel-Modus
+            return {
+                'border-[10px]': true, // Basis-Breite
+                'border-white': mode === 'normal', // Standard
+                'border-double': mode === 'double', // Silber (CSS)
+                'border-triple': mode === 'triple', // Gold (CSS)
+                'joker-glow': mode === 'joker'     // Akzentfarbe (CSS)
+            };
+        },
+        
         // Prüft, ob alle Fragen auf 'done' stehen
         gameFinished() {
             return this.gameData.categories.every(cat => 
