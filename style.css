@@ -66,8 +66,24 @@
             animation: expand-in 0.5s cubic-bezier(0.2, 1, 0.3, 1);
         }
 
+        .modal-leave-active {
+            transition: opacity 0.2s ease-in;
+        }
+
+        /* Der Inhalt beim Verlassen */
         .modal-leave-active .modal-content {
-            animation: expand-in 0.2s reverse ease-in;
+            /* Wir nutzen keine Animation reverse, sondern eine direkte Transition */
+            transform: scale(0.3);
+            opacity: 0;
+            filter: blur(10px);
+            transition: all 0.2s ease-in;
+        }
+
+        /* Sicherstellen, dass der Startzustand beim Öffnen sauber definiert ist */
+        .modal-enter-from .modal-content {
+            transform: scale(0.3);
+            opacity: 0;
+            filter: blur(10px);
         }
 
         @keyframes expand-in {

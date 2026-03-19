@@ -103,8 +103,8 @@
         <button @click="addTeam" class="pointer-events-auto mb-6 w-12 h-12 bg-white/10 border-2 border-dashed border-white/30 rounded-full flex items-center justify-center text-white/50 hover:text-white">+</button>
     </div>
     
-    <transistion name="modal">
-        <div v-if="activeTile" class="fixed inset-0 bg-black/95 flex items-center justify-center z-[100] p-6 backdrop-blur-md">
+    <transition name="modal">
+        <div v-if="activeTile" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-6 backdrop-blur-md">
             
 
             <div class="modal-content dynamic-bg-primary w-full max-w-6xl p-12 rounded-[3rem] relative shadow-2xl text-center transition-all"
@@ -172,7 +172,7 @@
                 </div>
             </div>
         </div>
-    </transistion>
+    </transition>
     <div v-if="gameFinished" class="fixed inset-0 bg-black/98 z-[200] flex flex-col items-center justify-center p-10 backdrop-blur-2xl animate-joker">
         <div class="text-center mb-12">
             <h2 class="text-7xl font-black dynamic-text-secondary uppercase italic tracking-tighter mb-2">Finale Ergebnisse</h2>

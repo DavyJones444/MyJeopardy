@@ -53,7 +53,7 @@ createApp({
             const file = e.dataTransfer.files[0];
             if (file) this.processFile(file);
         });
-      },
+    },
   	computed: {
         rootStyles() { return { '--primary': this.gameData.theme.primary, '--secondary': this.gameData.theme.secondary } },
         
