@@ -53,40 +53,48 @@ createApp({
             const file = e.dataTransfer.files[0];
             if (file) this.processFile(file);
         });
-    },
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.activeTile) {
+                // Wir schließen das Feld, markieren es aber NICHT als erledigt (done = false)
+                // Wenn du es als erledigt markieren willst, nutze this.closeTile(true)
+                this.closeTile(false);
+            }
+        });
+      },
   	computed: {
-        rootStyles() { return { '--primary': this.gameData.theme.primary, '--secondary': this.gameData.theme.secondary } },
+        rootStyles() { 
+            return { 
+                '--primary': this.gameData.theme.primary, 
+                '--secondary': this.gameData.theme.secondary 
+            };
+        },
         
         getModalBorderClass() {
-            if (!this.activeTile) return {}; // Falls kein Modal offen ist
+            if (!this.activeTile) return {};
             
             const mode = this.activeTile.data.mode;
             
-            // Im Edit-Modus lassen wir den Rahmen standardmäßig weiß/primär
+            // Im Edit-Modus weißer Standardrahmen
             if (this.isEditing) return { 'border-[10px] border-white': true };
 
             // Logik für den Spiel-Modus
             return {
-                'border-[10px]': true, // Basis-Breite
-                'border-white': mode === 'normal', // Standard
-                'border-double': mode === 'double', // Silber (CSS)
-                'border-triple': mode === 'triple', // Gold (CSS)
-                'joker-glow': mode === 'joker'     // Akzentfarbe (CSS)
+                'border-[10px]': true,
+                'border-white': mode === 'normal',
+                'border-double': mode === 'double',
+                'border-triple': mode === 'triple',
+                'joker-glow': mode === 'joker'
             };
         },
         
-        // Prüft, ob alle Fragen auf 'done' stehen
         gameFinished() {
             return this.gameData.categories.every(cat => 
                 cat.questions.every(q => q.done === true)
             );
         },
-        // Sortiert die Teams nach Score für das Treppchen
+
         sortedTeams() {
-            // 1. Teams nach Score sortieren
             const sorted = [...this.gameData.teams].sort((a, b) => b.score - a.score);
-            
-            // 2. Den Rang berechnen (Teams mit gleichem Score bekommen gleichen Rang)
             let currentRank = 0;
             return sorted.map((team, index) => {
                 if (index > 0 && team.score < sorted[index - 1].score) {
@@ -95,7 +103,7 @@ createApp({
                 return { ...team, rank: currentRank };
             });
         }
-    },
+    }, // <-- Achte darauf, dass dieses Komma hier steht, bevor 'methods' beginnt!
     methods: {
         shareGame() {
             try {
