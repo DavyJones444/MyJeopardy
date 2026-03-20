@@ -50,7 +50,7 @@
             <button @click="triggerUpload" class="border-2 border-white px-4 py-1.5 rounded-full text-xs font-black hover:bg-white hover:text-black transition-colors uppercase">Import</button>
             <button v-if="isEditing" @click="downloadJSON" class="border-2 border-white/50 px-4 py-1.5 rounded-full text-xs font-black hover:border-white uppercase shadow-lg">Export</button>
             <button @click="shareGame" class="border-2 border-white px-4 py-1.5 rounded-full text-xs font-black hover:bg-white hover:text-black transition-colors uppercase">Teilen</button>
-            <input type="file" id="fileInput" class="hidden" @change="loadJSON" accept=".json">
+            <input type="file" id="fileInput" class="hidden" @change="loadJSON" accept=".jpdy, .json">
         </div>
     </div>
 
